@@ -24,11 +24,12 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const url = new URL(request.url);
   const token = url.searchParams.get('token');
 
-  if (!token || !env.TOKEN_SECRET) {
+  const secret = env.TOKEN_SECRET?.trim();
+  if (!token || !secret) {
     return redirect(`${siteUrl}/playbook?error=token`);
   }
 
-  const verified = await verifyConfirmToken(token, env.TOKEN_SECRET);
+  const verified = await verifyConfirmToken(token, secret);
   if (!verified) {
     return redirect(`${siteUrl}/playbook?error=token`);
   }

@@ -59,7 +59,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     return redirect(`${siteUrl}/playbook?error=turnstile`);
   }
 
-  const secret = env.TOKEN_SECRET;
+  const secret = env.TOKEN_SECRET?.trim();
   if (!secret) {
     console.error('[subscribe] TOKEN_SECRET is not set');
     return redirect(`${siteUrl}/playbook?error=config`);
