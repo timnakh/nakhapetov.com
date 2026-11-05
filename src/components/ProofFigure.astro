@@ -1,6 +1,9 @@
 ---
+import type { ProofSources } from '../data/proof';
+
 interface Props {
   src: string | null;
+  sources?: ProofSources | null;
   alt: string;
   caption: string;
   figNumber: number;
@@ -11,6 +14,7 @@ interface Props {
 
 const {
   src,
+  sources = null,
   alt,
   caption,
   figNumber,
@@ -20,27 +24,32 @@ const {
 } = Astro.props;
 
 const fullCaption = `Fig. ${figNumber}. ${caption}`;
+const lightboxSrc = sources?.fallback ?? src;
 ---
 
 <figure class="proof-figure" data-proof-figure>
   {
-    src && !missing ? (
+    lightboxSrc && !missing ? (
       <button
         type="button"
         class="proof-thumb"
         data-lightbox-open
-        data-lightbox-src={src}
+        data-lightbox-src={lightboxSrc}
         data-lightbox-alt={alt}
         aria-label={`Enlarge: ${alt}`}
       >
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          loading="lazy"
-          decoding="async"
-        />
+        <picture>
+          {sources?.avif && <source srcset={sources.avif} type="image/avif" />}
+          {sources?.webp && <source srcset={sources.webp} type="image/webp" />}
+          <img
+            src={lightboxSrc}
+            alt={alt}
+            width={width}
+            height={height}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
       </button>
     ) : (
       <div class="shot-slot" role="img" aria-label={`${alt} — asset pending`}>
