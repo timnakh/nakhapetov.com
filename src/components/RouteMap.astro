@@ -1,34 +1,55 @@
 ---
-import { playbook } from '../data/playbook';
+import { routeStations } from '../data/route';
+import { milestones } from '../data/log';
 ---
 
 <section class="section" aria-labelledby="route-heading">
   <div class="container">
+    <div class="hero-stamps" style="margin-bottom: 0.75rem;">
+      <span class="stamp">7 stations</span>
+    </div>
     <h2 class="section-title" id="route-heading">The route</h2>
-    <div class="route" data-route>
-      <div class="route-line" aria-hidden="true"><span></span></div>
-      <ul class="route-nodes">
-        {
-          playbook.routeNodes.map((node) => (
-            <li>
-              <button
-                type="button"
-                class="route-node"
-                data-route-node
-                data-step={node.id}
-                aria-expanded="false"
-                aria-describedby={`route-tip-${node.id}`}
-              >
-                <span class="route-dot" aria-hidden="true" />
-                <span class="route-copy">
-                  <span class="route-label">{node.title}</span>
-                  <span class="route-tip" id={`route-tip-${node.id}`}>{node.tip}</span>
-                </span>
-              </button>
-            </li>
-          ))
-        }
-      </ul>
+
+    <div class="route-layout">
+      <div>
+        <p class="eyebrow" style="margin-bottom: 0.85rem;">Milestone log</p>
+        <ol class="milestone-log">
+          {
+            milestones.map((m) => (
+              <li>
+                <span class="milestone-date">{m.date}</span>
+                <span class="milestone-event">{m.event}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="route" data-route>
+        <ol class="route-steps">
+          {
+            routeStations.map((node) => (
+              <li class="route-step">
+                <button
+                  type="button"
+                  data-route-node
+                  data-step={node.id}
+                  aria-expanded="false"
+                >
+                  <span class="num">{String(node.id).padStart(2, '0')}</span>
+                  <span class="label">{node.title}</span>
+                  <span class="chev" aria-hidden="true">↗</span>
+                </button>
+                <div class="route-detail">
+                  <p class="trap-mark">{node.trap}</p>
+                  <p style="margin: 0 0 0.65rem;">{node.tip}</p>
+                  <a href={node.chapterHref}>Open chapter →</a>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
     </div>
   </div>
 </section>

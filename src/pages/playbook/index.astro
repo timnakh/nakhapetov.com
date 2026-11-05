@@ -13,11 +13,16 @@ const showBuy = Boolean(playbook.checkoutUrl);
   canonicalPath="/playbook"
   ogImage="/og-playbook.png"
 >
-  <section class="page-hero" data-hero-glow>
-    <div class="hero-glow" aria-hidden="true"></div>
+  <section class="page-hero">
     <div class="container">
+      <div class="hero-stamps">
+        <span class="stamp">Free chapter</span>
+        <span class="stamp">Updated Nov 2026</span>
+      </div>
       <p class="eyebrow">The Indie Launch Playbook</p>
-      <h1 class="hero-title" data-word-reveal>From vibe-coded app to paid product</h1>
+      <h1 class="hero-title" data-word-reveal style="font-size: clamp(2.4rem, 7vw, 5.5rem); max-width: 14ch;">
+        From vibe-coded app to paid product
+      </h1>
       <p class="lede">
         Web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.
       </p>
@@ -37,6 +42,38 @@ const showBuy = Boolean(playbook.checkoutUrl);
   </section>
 
   <RouteMap />
+
+  <section class="section" aria-labelledby="evidence-heading">
+    <div class="container">
+      <h2 class="section-title" id="evidence-heading">Evidence</h2>
+      <div class="evidence-grid">
+        <figure>
+          <div class="shot-slot">
+            <span class="shot-label">screenshot pending</span>
+          </div>
+          <figcaption class="fig-cap">Fig. 2. Paddle dashboard — live payments (asset pending).</figcaption>
+        </figure>
+        <figure>
+          <div class="shot-slot">
+            <span class="shot-label">screenshot pending</span>
+          </div>
+          <figcaption class="fig-cap">Fig. 3. Play Console, Nov 2. Review approved.</figcaption>
+        </figure>
+        <figure>
+          <div class="shot-slot">
+            <span class="shot-label">screenshot pending</span>
+          </div>
+          <figcaption class="fig-cap">Fig. 4. Play Console — subscriptions created (asset pending).</figcaption>
+        </figure>
+        <figure>
+          <div class="shot-slot">
+            <span class="shot-label">screenshot pending</span>
+          </div>
+          <figcaption class="fig-cap">Fig. 5. Review email — personal data redacted (asset pending).</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
   <section class="section" aria-labelledby="why-heading">
     <div class="container prose-narrow">
@@ -83,7 +120,7 @@ const showBuy = Boolean(playbook.checkoutUrl);
   </section>
 
   <section class="section" aria-labelledby="faq-heading">
-    <div class="container" style="max-width: 40rem;">
+    <div class="container" style="max-width: 42rem;">
       <h2 class="section-title" id="faq-heading">FAQ</h2>
       <div class="faq">
         {

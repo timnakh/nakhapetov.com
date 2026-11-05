@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { projects } from '../data/projects';
+import { site } from '../data/playbook';
+
+const journal = projects.filter((p) => !p.featuredWorld);
+const worlds = projects.filter((p) => p.featuredWorld);
 ---
 
 <BaseLayout
@@ -10,19 +14,24 @@ import { projects } from '../data/projects';
   canonicalPath="/"
   ogImage="/og-home.png"
 >
-  <section class="page-hero" data-hero-glow>
-    <div class="hero-glow" aria-hidden="true"></div>
+  <section class="page-hero">
     <div class="container">
-      <p class="eyebrow">Tim Nakhapetov</p>
-      <h1 class="hero-title" data-word-reveal>
+      <div class="hero-stamps">
+        <span class="stamp">Indie</span>
+        <span class="stamp">Updated Nov 2026</span>
+      </div>
+      <h1 class="hero-brand">{site.name}</h1>
+      <h2 class="hero-title" data-word-reveal>
         I build small apps. Then I write down how it was done.
-      </h1>
+      </h2>
       <p class="lede">
         Indie developer. Everything here is something I shipped, charged for, or learned the hard way.
       </p>
       <div class="cta-row">
         <a class="btn btn-primary" href="#projects">See projects</a>
-        <a class="btn btn-ghost" href="/playbook">Read the free chapter</a>
+        <a href="/playbook" style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+          Free chapter →
+        </a>
       </div>
     </div>
   </section>
@@ -30,8 +39,28 @@ import { projects } from '../data/projects';
   <section class="section" id="projects" aria-labelledby="projects-heading">
     <div class="container">
       <h2 class="section-title" id="projects-heading">Projects</h2>
-      <div class="projects-grid">
-        {projects.map((project) => <ProjectCard project={project} />)}
+
+      {worlds.map((project, i) => <ProjectCard project={project} index={i} />)}
+
+      <div style="margin-top: 2rem; overflow-x: auto;">
+        <table class="project-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th class="col-year">Year</th>
+              <th aria-label="Open"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              journal.map((project, i) => (
+                <ProjectCard project={project} index={worlds.length + i} />
+              ))
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
