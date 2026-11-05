@@ -1,48 +1,12 @@
 /**
  * Конфиг страницы плейбука.
  * checkoutUrl пуст по умолчанию — кнопка покупки скрыта.
+ * Маршрут: src/data/route.ts · хроника: src/data/log.ts
  */
 export const playbook = {
   checkoutUrl: '' as string,
   edition: 'November 2026',
   freeChapterPath: '/playbook/chapter-1',
-  routeNodes: [
-    {
-      id: 1,
-      title: 'Identity',
-      tip: 'entity, bank, D-U-N-S, business email',
-    },
-    {
-      id: 2,
-      title: 'Web sales',
-      tip: 'provider review, sandbox, live',
-    },
-    {
-      id: 3,
-      title: 'Play setup',
-      tip: 'organization account, payments profile',
-    },
-    {
-      id: 4,
-      title: 'App ready',
-      tip: 'flavors, signed bundle, data safety',
-    },
-    {
-      id: 5,
-      title: 'Release',
-      tip: 'internal test, review, public listing',
-    },
-    {
-      id: 6,
-      title: 'Billing',
-      tip: 'subscriptions, notifications, 15% fee',
-    },
-    {
-      id: 7,
-      title: 'Promotion',
-      tip: 'plan, measure, iterate',
-    },
-  ],
   stats: [
     { value: '7', label: 'steps in order' },
     { value: '17', label: 'traps and fixes' },

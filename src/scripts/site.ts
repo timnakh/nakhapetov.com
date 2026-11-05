@@ -7,14 +7,22 @@ type PostHogLike = {
   capture: (event: string, props?: Record<string, unknown>) => void;
 };
 
+type RouteStation = {
+  id: number;
+  title: string;
+  tip: string;
+  trap: string;
+  chapterHref: string;
+};
+
 declare global {
   interface Window {
     posthog?: PostHogLike;
+    __ROUTE_STATIONS__?: RouteStation[];
   }
 }
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 function capture(event: string, props: Record<string, unknown> = {}) {
   window.posthog?.capture(event, { site: 'hub', ...props });
@@ -35,43 +43,22 @@ function splitHeroWords() {
   });
 }
 
-function initHeroGlow() {
-  if (reducedMotion || !finePointer) return;
-  const hero = document.querySelector<HTMLElement>('[data-hero-glow]');
-  if (!hero) return;
-  hero.addEventListener('pointermove', (e) => {
-    const rect = hero.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    hero.style.setProperty('--gx', `${x}%`);
-    hero.style.setProperty('--gy', `${y}%`);
-  });
-}
-
-function initCards() {
-  if (reducedMotion || !finePointer) return;
-  document.querySelectorAll<HTMLElement>('[data-interactive-card]').forEach((card) => {
-    card.addEventListener('pointermove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      const rotY = (px - 0.5) * 8;
-      const rotX = (0.5 - py) * 8;
-      card.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
-      card.style.setProperty('--mx', `${px * 100}%`);
-      card.style.setProperty('--my', `${py * 100}%`);
-      card.classList.add('is-lit');
-    });
-    card.addEventListener('pointerleave', () => {
-      card.style.transform = '';
-      card.classList.remove('is-lit');
-    });
+function initJournalRows() {
+  document.querySelectorAll<HTMLElement>('[data-journal-row]').forEach((row) => {
+    row.addEventListener('focus', () => row.classList.add('is-open'));
+    row.addEventListener('blur', () => row.classList.remove('is-open'));
   });
 }
 
 function initRoute() {
   const route = document.querySelector<HTMLElement>('[data-route]');
   if (!route) return;
+
+  const stations = window.__ROUTE_STATIONS__ ?? [];
+  const panel = route.querySelector<HTMLElement>('[data-route-panel]');
+  const trapEl = route.querySelector<HTMLElement>('[data-route-trap]');
+  const tipEl = route.querySelector<HTMLElement>('[data-route-tip]');
+  const linkEl = route.querySelector<HTMLAnchorElement>('[data-route-link]');
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -86,14 +73,50 @@ function initRoute() {
   );
   io.observe(route);
 
-  route.querySelectorAll<HTMLButtonElement>('[data-route-node]').forEach((btn) => {
-    btn.addEventListener('click', () => {
+  const nodes = route.querySelectorAll<HTMLElement>('[data-route-node]');
+
+  function setOpen(step: number | null) {
+    nodes.forEach((node) => {
+      const id = Number(node.dataset.step);
+      const open = step !== null && id === step;
+      node.setAttribute('aria-expanded', open ? 'true' : 'false');
+      node.classList.toggle('is-active', open);
+    });
+
+    if (!panel || !trapEl || !tipEl || !linkEl) return;
+    const station = stations.find((s) => s.id === step);
+    if (!station) {
+      panel.hidden = true;
+      return;
+    }
+    trapEl.textContent = station.trap;
+    tipEl.textContent = station.tip;
+    linkEl.href = station.chapterHref;
+    panel.hidden = false;
+  }
+
+  nodes.forEach((btn) => {
+    const activate = () => {
+      const step = Number(btn.dataset.step);
       const open = btn.getAttribute('aria-expanded') === 'true';
-      route.querySelectorAll('[data-route-node]').forEach((other) => {
-        other.setAttribute('aria-expanded', 'false');
-      });
-      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-      if (!open) capture('route_node_open', { step: Number(btn.dataset.step) });
+      if (open) {
+        setOpen(null);
+        return;
+      }
+      setOpen(step);
+      capture('route_node_open', { step });
+    };
+
+    btn.addEventListener('click', (e) => {
+      // Не перехватываем клик по ссылке внутри мобильной детали
+      if ((e.target as HTMLElement).closest('a')) return;
+      activate();
+    });
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activate();
+      }
     });
   });
 }
@@ -128,8 +151,7 @@ function waitForPostHogAndView() {
 }
 
 splitHeroWords();
-initHeroGlow();
-initCards();
+initJournalRows();
 initRoute();
 initAnalyticsClicks();
 waitForPostHogAndView();
