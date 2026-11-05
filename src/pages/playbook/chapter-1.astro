@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SubscribeForm from '../../components/SubscribeForm.astro';
 import TrapCallout from '../../components/TrapCallout.astro';
 import DoneWhen from '../../components/DoneWhen.astro';
 import CanonicalBlock from '../../components/CanonicalBlock.astro';
@@ -60,7 +59,7 @@ What comes next
 
 Chapter 2 is about taking payments on the web through a merchant of record: what the provider reviews on your site, how to write the policies they check, and how to build in the sandbox while you wait for approval. After that the route splits into two lanes, web sales and Google Play, and the two run side by side.
 
-The full edition covers all seven steps, a list of 17 traps with fixes, and an AI Pack: a file of ready-to-paste briefs for your coding assistant. Leave your email below and you will hear when it is ready.
+The full playbook and the AI Pack are written. I am checking demand before I open sales.
 
 Platform rules and screens change. Every claim in this playbook is dated, and if you notice something that no longer matches, tell us.`;
 
@@ -265,7 +264,7 @@ const jsonLd = {
           Chapter 2 is about taking payments on the web through a merchant of record: what the provider reviews on your site, how to write the policies they check, and how to build in the sandbox while you wait for approval. After that the route splits into two lanes, web sales and Google Play, and the two run side by side.
         </p>
         <p>
-          The full edition covers all seven steps, a list of 17 traps with fixes, and an AI Pack: a file of ready-to-paste briefs for your coding assistant. Leave your email below and you will hear when it is ready.
+          The full playbook and the AI Pack are written. I am checking demand before I open sales.
         </p>
         <p class="chapter-aside">
           <em
@@ -279,13 +278,20 @@ const jsonLd = {
         </nav>
 
         <div class="chapter-subscribe">
-          <h2 class="section-title" style="font-size: 1.5rem;">Stay on the list</h2>
-          <SubscribeForm
-            id="subscribe-chapter"
-            buttonLabel="Notify me about the full edition"
-            hint="Get the full edition when it is ready. One email, unsubscribe any time."
-            eventName="chapter_cta_submit"
-          />
+          <h2 class="section-title" style="font-size: 1.5rem;">Early access</h2>
+          <p>
+            The full playbook and the AI Pack are written. I am checking demand before I open sales.
+          </p>
+          <div class="cta-row">
+            <a
+              class="btn btn-primary"
+              href="/playbook/early-access"
+              data-event="early_access_click"
+              data-source="chapter-1"
+            >
+              Get early access to the full playbook
+            </a>
+          </div>
           <p class="edition">
             Something outdated? Tell me:{' '}
             <a href={`mailto:${site.email}`}>{site.email}</a>

@@ -3,7 +3,7 @@
  */
 
 import { createMailer, unsubscribeFooter } from '../lib/mailer';
-import { verifyConfirmToken } from '../lib/token';
+import { signInterestToken, verifyConfirmToken } from '../lib/token';
 
 interface Env {
   MAIL_PROVIDER_API_KEY?: string;
@@ -45,6 +45,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   }
 
   const chapterUrl = `${siteUrl}/playbook/chapter-1`;
+  const interestToken = await signInterestToken(verified.email, secret);
+  const earlyAccessUrl = `${siteUrl}/playbook/early-access?t=${encodeURIComponent(interestToken)}`;
   const footer = unsubscribeFooter(verified.email, siteUrl);
 
   await mailer.send({
@@ -54,12 +56,14 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     html: `
       <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111111;max-width:560px;line-height:1.55;font-size:16px;">
         <p style="margin:0 0 1em;">Thanks for confirming. Your free chapter of the Indie Launch Playbook is ready — <em>Identity and entity</em>, the first step of the route.</p>
-        <p style="margin:0 0 1em;">Read it here: <a href="${chapterUrl}" style="color:#111111;text-decoration:underline;">${chapterUrl}</a><br/><br/>I'll write again when the full edition ships. Reply anytime if something looks outdated.</p>
+        <p style="margin:0 0 1em;">Read it here: <a href="${chapterUrl}" style="color:#111111;text-decoration:underline;">${chapterUrl}</a></p>
+        <p style="margin:0 0 1em;">The full playbook and the AI Pack are written. I am checking demand before I open sales. If you want early access, tell me what feels like a fair price: <a href="${earlyAccessUrl}" style="color:#111111;text-decoration:underline;">${earlyAccessUrl}</a></p>
+        <p style="margin:0 0 1em;">Reply anytime if something looks outdated.</p>
         <p style="margin:0 0 1em;">Tim</p>
         ${footer.html}
       </div>
     `,
-    text: `Your free chapter: Identity and entity\n\nThanks for confirming. Your free chapter of the Indie Launch Playbook is ready — Identity and entity, the first step of the route.\n\nRead it here: ${chapterUrl}\n\nI'll write again when the full edition ships. Reply anytime if something looks outdated.\n\nTim${footer.text}`,
+    text: `Your free chapter: Identity and entity\n\nThanks for confirming. Your free chapter of the Indie Launch Playbook is ready — Identity and entity, the first step of the route.\n\nRead it here: ${chapterUrl}\n\nThe full playbook and the AI Pack are written. I am checking demand before I open sales. If you want early access, tell me what feels like a fair price:\n${earlyAccessUrl}\n\nReply anytime if something looks outdated.\n\nTim${footer.text}`,
   });
 
   if (already) {

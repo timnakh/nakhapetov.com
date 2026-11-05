@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="You're counted in"
+  description="Thanks for the early-access signal for the Indie Launch Playbook."
+  canonicalPath="/playbook/early-access/thanks"
+  ogImage="/og-playbook.png"
+  noindex={true}
+>
+  <section class="page-hero">
+    <div class="container prose-narrow">
+      <p class="margin-note">Early access</p>
+      <h1 class="hero-title" style="max-width: 14ch;">You're counted in</h1>
+      <p class="lede">
+        Thanks. I noted what feels fair to you. The full playbook and the AI Pack are written — I am checking demand before I open sales. No purchase happened on this page.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary btn-large" href="/playbook/chapter-1">Read the free chapter</a>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-ghost" href="/playbook">Back to the playbook</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var price = params.get('price') || '';
+    var hasComment = params.get('comment') === '1';
+    var tries = 0;
+    function tick() {
+      if (window.posthog && typeof window.posthog.capture === 'function') {
+        window.posthog.capture('early_access_submit', {
+          site: 'hub',
+          price_choice: price || undefined,
+          has_comment: hasComment,
+        });
+        return;
+      }
+      if (tries++ < 50) setTimeout(tick, 100);
+    }
+    tick();
+  })();
+</script>

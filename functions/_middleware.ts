@@ -18,6 +18,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   config: 'Something went wrong on our side. Please try again later.',
   invalid: 'Something went wrong. Please try again.',
   already: 'You are already on the list. Check your inbox for the chapter link.',
+  price: 'Pick a fair-price range so I can count you in.',
 };
 
 function siteKeyFromEnv(env: Env): string {

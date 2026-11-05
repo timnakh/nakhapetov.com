@@ -1,11 +1,13 @@
 /**
- * HMAC confirm token: email + timestamp, TTL 48h.
+ * HMAC subscriber token: email + timestamp.
  * Format: base64url(email + '.' + ts) + '.' + hex(hmac-sha256)
  *
+ * Confirm links: 48h. Early-access / interest links: 90d (same payload shape).
  * Important: email may contain dots — parse timestamp from the last '.' of the payload.
  */
 
-const TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
+export const CONFIRM_TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
+export const INTEREST_TOKEN_TTL_MS = 90 * 24 * 60 * 60 * 1000;
 
 function toHex(buf: ArrayBuffer): string {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -51,6 +53,7 @@ export async function verifyConfirmToken(
   token: string,
   secret: string,
   now = Date.now(),
+  ttlMs = CONFIRM_TOKEN_TTL_MS,
 ): Promise<{ email: string } | null> {
   try {
     const trimmed = token.trim();
@@ -67,7 +70,7 @@ export async function verifyConfirmToken(
     const email = payload.slice(0, tsSep).toLowerCase();
     const ts = Number(payload.slice(tsSep + 1));
     if (!email || !Number.isFinite(ts)) return null;
-    if (now - ts > TOKEN_TTL_MS || ts > now + 60_000) return null;
+    if (now - ts > ttlMs || ts > now + 60_000) return null;
 
     const key = await importKey(secret.trim());
     const valid = await crypto.subtle.verify(
@@ -82,3 +85,14 @@ export async function verifyConfirmToken(
     return null;
   }
 }
+
+/** Same HMAC shape as confirm; verified with the longer interest TTL. */
+export async function verifyInterestToken(
+  token: string,
+  secret: string,
+  now = Date.now(),
+): Promise<{ email: string } | null> {
+  return verifyConfirmToken(token, secret, now, INTEREST_TOKEN_TTL_MS);
+}
+
+export const signInterestToken = signConfirmToken;

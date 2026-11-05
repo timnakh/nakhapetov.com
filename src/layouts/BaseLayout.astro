@@ -15,6 +15,7 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
   ogImage = '/og-home.png',
   ogType = 'website',
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(canonicalPath, site.url).toString();
@@ -40,6 +42,7 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#F2EFE8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
