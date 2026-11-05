@@ -3,26 +3,109 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Free chapter · The Indie Launch Playbook"
-  description="Free chapter stub — full text will be published here."
+  title="Chapter 1. Identity and entity · The Indie Launch Playbook"
+  description="Settle your legal identity, D-U-N-S, bank account and business email before you apply anywhere. Free chapter from The Indie Launch Playbook."
   canonicalPath="/playbook/chapter-1"
   ogImage="/og-playbook.png"
 >
-  <section class="page-hero">
-    <div class="container prose-narrow">
-      <p class="margin-note">Free chapter</p>
-      <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3.5rem); max-width: 16ch;">
-        Chapter 1 — coming soon
-      </h1>
-      <p class="lede">
-        This page is a stub. The free chapter text will be published here when the owner provides the file.
-      </p>
-      <p class="muted">
-        If you confirmed your email, you will also receive the chapter by mail once sending is configured.
-      </p>
-      <div class="cta-row">
-        <a class="btn btn-ghost" href="/playbook">Back to the playbook</a>
+  <article>
+    <section class="page-hero" style="padding-bottom: 2rem;">
+      <div class="container prose-narrow">
+        <p class="margin-note">Free chapter</p>
+        <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3.5rem); max-width: 18ch;">
+          Chapter 1. Identity and entity
+        </h1>
+        <p class="edition" style="margin-top: 0;">
+          <em>From The Indie Launch Playbook. Edition: November 2026.</em>
+        </p>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="section chapter-body" style="padding-top: 0;">
+      <div class="container prose-narrow">
+        <p>
+          Every step that comes later asks the same question: who are you? The payment provider asks it. Google Play asks it. Your bank asks it. And they all compare the answers with each other. So settle the answers once, before you apply anywhere, and then use them letter for letter.
+        </p>
+        <p>This chapter takes an afternoon. It saves days.</p>
+
+        <h2>What you will have at the end</h2>
+        <ul>
+          <li>one written block with your legal identity, kept in a password manager;</li>
+          <li>an issued D-U-N-S number for your business;</li>
+          <li>a business bank account with a statement you can export;</li>
+          <li>a business email on your own domain that receives and sends;</li>
+          <li>a Google account that exists only for the business.</li>
+        </ul>
+
+        <h2>Why this comes first</h2>
+        <p>
+          Verification is mostly string comparison between documents. A mismatch does not fail loudly. It costs you days of waiting, then a vague rejection, then a support ticket. Almost every one of those mismatches is avoidable by deciding the details up front.
+        </p>
+
+        <h2>Do</h2>
+        <p>
+          <strong>1. Pick the selling entity.</strong> For Google Play and for a payment provider you will want a registered business, either a sole proprietorship or a company, not a private person. Your accountant decides the form. This playbook only needs the legal name and the address.
+        </p>
+        <p>
+          <strong>2. Write one canonical block.</strong> Put these in one note: the exact legal name as registered, the trading name, the address, the business phone, the business email, the website. From now on you copy and paste from it. Never retype.
+        </p>
+        <p>
+          Transliteration is the usual failure. The same name in Latin letters can legitimately be spelled two ways (a Cyrillic name rendered with "kh" or with "h", for example), and every system stores whichever version you typed. Choose one spelling and keep it everywhere.
+        </p>
+        <p>
+          <strong>3. Get a business email on your own domain.</strong> You need a contact address and a support address. We forwarded incoming mail to an existing inbox and sent outgoing mail through a transactional email service. That is enough for platform reviews and costs almost nothing.
+        </p>
+        <p>
+          <strong>4. Create a dedicated Google account for the business.</strong> Use it to register the Play developer account. The owner of a Play account cannot be changed later, so do not register under an account you might lose or want to hand over. Add your personal account as an admin afterwards.
+        </p>
+        <p>
+          <strong>5. Request a D-U-N-S number.</strong> This is a nine-digit business identifier, and Google's organization sign-up checks it. At the time of writing it is free for this purpose. Submit the legal name, address, phone, legal form and activity exactly as in your canonical block, plus a registration document if they ask. Where the registry works through a regional partner, you fill in that partner's form instead of the main one.
+        </p>
+        <p>
+          In our case the number was issued on 27 October 2026 and Google matched it on the 28th. Google's sign-up looks the number up while you register. If it does not match straight away, wait a day or two and retry.
+        </p>
+        <p>
+          <strong>6. Open a business bank account</strong> in the currency you will be paid in (we used USD). Check that the account holder's name and address can be proven with a statement. Google and the payment provider both ask for one.
+        </p>
+        <p>
+          <strong>7. Decide what the public will see.</strong> A Play listing for a business shows the developer name and contact email. Once you declare trader status it also shows an address and a phone number. Choose an address and a number you are comfortable publishing, preferably a dedicated business phone number, before you register. Changing them later means re-verifying across the bank, the payment provider and Google.
+        </p>
+
+        <h2>Traps</h2>
+        <ul>
+          <li>
+            <strong>A name spelled differently in the D-U-N-S record and at the bank.</strong> Our Google payments profile was verified anyway. Treat that as luck, not a plan.
+          </li>
+          <li>
+            <strong>Using your home address for the business without noticing that it will be published.</strong>
+          </li>
+          <li>
+            <strong>Moving house later.</strong> An address change touches every account above. If you plan to move within a year, ask your accountant which address to register.
+          </li>
+        </ul>
+
+        <h2>Done when</h2>
+        <p>
+          You have the canonical block in a password manager, an issued D-U-N-S number, a business bank account with a statement you can export, and a business email that both receives and sends.
+        </p>
+
+        <h2>What comes next</h2>
+        <p>
+          Chapter 2 is about taking payments on the web through a merchant of record: what the provider reviews on your site, how to write the policies they check, and how to build in the sandbox while you wait for approval. After that the route splits into two lanes, web sales and Google Play, and the two run side by side.
+        </p>
+        <p>
+          The full edition covers all seven steps, a list of 17 traps with fixes, and an AI Pack: a file of ready-to-paste briefs for your coding assistant. Leave your email on the playbook page and you will hear when it is ready.
+        </p>
+        <p class="chapter-aside">
+          <em
+            >Platform rules and screens change. Every claim in this playbook is dated, and if you notice something that no longer matches, tell us.</em
+          >
+        </p>
+
+        <div class="cta-row">
+          <a class="btn btn-ghost" href="/playbook">Back to the playbook</a>
+        </div>
+      </div>
+    </section>
+  </article>
 </BaseLayout>

@@ -853,6 +853,37 @@ p:last-child {
   color: var(--muted);
 }
 
+.prose-narrow h2 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.85rem;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+}
+
+.chapter-body ul {
+  margin: 0 0 1.25rem;
+  padding-left: 1.15rem;
+  max-width: 38rem;
+  color: var(--muted);
+}
+
+.chapter-body li {
+  margin-bottom: 0.55rem;
+}
+
+.chapter-body li:last-child {
+  margin-bottom: 0;
+}
+
+.chapter-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.chapter-aside {
+  margin-top: 1.75rem;
+  font-size: 0.95rem;
+}
+
 .page-hero {
   position: relative;
   padding: 4.5rem 0 3.25rem;
