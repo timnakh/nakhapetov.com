@@ -1,5 +1,8 @@
 /**
- * HMAC-токен подтверждения: email + timestamp, срок 48 часов.
+ * HMAC confirm token: email + timestamp, TTL 48h.
+ * Format: base64url(email + '.' + ts) + '.' + hex(hmac-sha256)
+ *
+ * Important: email may contain dots — parse timestamp from the last '.' of the payload.
  */
 
 const TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
@@ -16,6 +19,17 @@ function fromHex(hex: string): Uint8Array {
   return out;
 }
 
+function base64UrlEncodeUtf8(text: string): string {
+  const b64 = btoa(text);
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function base64UrlDecodeUtf8(b64url: string): string {
+  let b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4));
+  return atob(b64 + pad);
+}
+
 async function importKey(secret: string): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     'raw',
@@ -28,10 +42,9 @@ async function importKey(secret: string): Promise<CryptoKey> {
 
 export async function signConfirmToken(email: string, secret: string, now = Date.now()): Promise<string> {
   const payload = `${email.toLowerCase()}.${now}`;
-  const key = await importKey(secret);
+  const key = await importKey(secret.trim());
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
-  const token = `${btoa(payload)}.${toHex(sig)}`;
-  return token.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return `${base64UrlEncodeUtf8(payload)}.${toHex(sig)}`;
 }
 
 export async function verifyConfirmToken(
@@ -40,18 +53,23 @@ export async function verifyConfirmToken(
   now = Date.now(),
 ): Promise<{ email: string } | null> {
   try {
-    const normalized = token.replace(/-/g, '+').replace(/_/g, '/');
-    const pad = normalized.length % 4 === 0 ? '' : '='.repeat(4 - (normalized.length % 4));
-    const raw = normalized + pad;
-    const [payloadB64, sigHex] = raw.split('.');
-    if (!payloadB64 || !sigHex) return null;
-    const payload = atob(payloadB64);
-    const [email, tsStr] = payload.split('.');
-    const ts = Number(tsStr);
+    const trimmed = token.trim();
+    const dot = trimmed.lastIndexOf('.');
+    if (dot <= 0 || dot === trimmed.length - 1) return null;
+
+    const payloadB64url = trimmed.slice(0, dot);
+    const sigHex = trimmed.slice(dot + 1).toLowerCase();
+    if (!/^[0-9a-f]+$/.test(sigHex) || sigHex.length % 2 !== 0) return null;
+
+    const payload = base64UrlDecodeUtf8(payloadB64url);
+    const tsSep = payload.lastIndexOf('.');
+    if (tsSep <= 0) return null;
+    const email = payload.slice(0, tsSep).toLowerCase();
+    const ts = Number(payload.slice(tsSep + 1));
     if (!email || !Number.isFinite(ts)) return null;
     if (now - ts > TOKEN_TTL_MS || ts > now + 60_000) return null;
 
-    const key = await importKey(secret);
+    const key = await importKey(secret.trim());
     const valid = await crypto.subtle.verify(
       'HMAC',
       key,
@@ -59,7 +77,7 @@ export async function verifyConfirmToken(
       new TextEncoder().encode(payload),
     );
     if (!valid) return null;
-    return { email: email.toLowerCase() };
+    return { email };
   } catch {
     return null;
   }
