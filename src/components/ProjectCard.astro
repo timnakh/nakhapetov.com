@@ -3,66 +3,93 @@ import type { Project } from '../data/projects';
 
 interface Props {
   project: Project;
+  index: number;
 }
 
-const { project } = Astro.props;
+const { project, index } = Astro.props;
 const hasBadgeFile = Boolean(project.playStore?.badgeSrc);
+const num = String(index + 1).padStart(2, '0');
 ---
 
-<article
-  class="project-card"
-  data-project={project.id}
-  data-interactive-card
->
-  <div class="project-media" aria-hidden={!project.image}>
-    {
-      project.image ? (
-        <img src={project.image} alt={project.imageAlt ?? ''} loading="lazy" width="640" height="400" />
-      ) : (
-        <div class="sr-only">{project.imageAlt ?? `${project.name} placeholder`}</div>
-      )
-    }
-  </div>
-  <div>
-    <p class="project-status">{project.status}</p>
-    <h3>{project.name}</h3>
-    <p class="muted">{project.description}</p>
-  </div>
-  <div class="project-actions">
+{
+  project.featuredWorld ? (
+    <article class="lj-world" data-project={project.id}>
+      <p class="margin-note" style="color: var(--lj-accent);">
+        Note {num} · {project.year}
+      </p>
+      <h3 class="journal-title">{project.name}</h3>
+      <p class="journal-meta" style="color: var(--lj-muted); margin: 0.35rem 0 0.75rem;">
+        {project.status}
+      </p>
+      <p>{project.description}</p>
+      <div class="lj-frame" aria-hidden={project.image ? undefined : true}>
+        {project.image ? (
+          <img src={project.image} alt={project.imageAlt ?? ''} loading="lazy" width="640" height="400" />
+        ) : (
+          <span class="shot-label">screenshot pending</span>
+        )}
+      </div>
+      <p class="fig-cap" style="color: var(--lj-muted);">
+        Fig. 1. Life Journey RPG — app world (asset pending).
+      </p>
+      <div class="project-actions">
+        <a
+          class="btn btn-primary"
+          href={project.cta.href}
+          data-event="project_card_click"
+          data-project={project.id}
+          {...(project.cta.href.startsWith('http')
+            ? { rel: 'noopener noreferrer', target: '_blank' }
+            : {})}
+        >
+          {project.cta.label}
+        </a>
+        {project.playStore && (
+          <a
+            class={hasBadgeFile ? 'play-badge' : 'play-badge-fallback'}
+            href={project.playStore.href}
+            rel="noopener noreferrer"
+            target="_blank"
+            data-event="play_store_click"
+            data-source="hub"
+            aria-label="Get it on Google Play"
+          >
+            {hasBadgeFile ? (
+              <img
+                src={project.playStore.badgeSrc}
+                alt="Get it on Google Play"
+                height="40"
+                width="135"
+              />
+            ) : (
+              <span>Get it on Google Play</span>
+            )}
+          </a>
+        )}
+      </div>
+    </article>
+  ) : (
     <a
-      class="btn btn-primary"
+      class="journal-row"
       href={project.cta.href}
-      data-event="project_card_click"
       data-project={project.id}
+      data-event="project_card_click"
+      data-journal-row
       {...(project.cta.href.startsWith('http')
         ? { rel: 'noopener noreferrer', target: '_blank' }
         : {})}
     >
-      {project.cta.label}
+      <span class="journal-num">{num}</span>
+      <span class="journal-main">
+        <span class="journal-title-row">
+          <span class="journal-title">{project.name}</span>
+          <span class="journal-meta">
+            {project.status} · {project.year}
+          </span>
+        </span>
+        <span class="journal-desc">{project.description}</span>
+      </span>
+      <span class="journal-arrow" aria-hidden="true">→</span>
     </a>
-    {
-      project.playStore && (
-        <a
-          class={hasBadgeFile ? 'play-badge' : 'play-badge-fallback'}
-          href={project.playStore.href}
-          rel="noopener noreferrer"
-          target="_blank"
-          data-event="play_store_click"
-          data-source="hub"
-          aria-label="Get it on Google Play"
-        >
-          {hasBadgeFile ? (
-            <img
-              src={project.playStore.badgeSrc}
-              alt="Get it on Google Play"
-              height="40"
-              width="135"
-            />
-          ) : (
-            <span>Get it on Google Play</span>
-          )}
-        </a>
-      )
-    }
-  </div>
-</article>
+  )
+}
