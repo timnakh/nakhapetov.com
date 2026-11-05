@@ -53,8 +53,8 @@ npx wrangler pages dev dist
 | Имя | Где | Назначение |
 | --- | --- | --- |
 | `TURNSTILE_SECRET` | Production (secret) | Проверка Turnstile на `/api/subscribe` |
-| `TURNSTILE_SITE_KEY` | Production | Публичный ключ виджета (см. также `PUBLIC_…`) |
-| `PUBLIC_TURNSTILE_SITE_KEY` | Build + Production | То же значение, что `TURNSTILE_SITE_KEY` — нужно Astro на этапе сборки |
+| `TURNSTILE_SITE_KEY` | Production (+ Preview) | Публичный site key виджета; Functions middleware подставляет его в HTML на каждый запрос |
+| `PUBLIC_TURNSTILE_SITE_KEY` | **Build** + Production (+ Preview) | То же публичное значение — Astro читает его **только на сборке** в `data-sitekey` / `data-turnstile-site-key` |
 | `MAIL_PROVIDER_API_KEY` | Production (secret) | API-ключ Resend |
 | `MAIL_LIST_ID` | Production | ID Audience (списка) в Resend |
 | `MAIL_FROM` | Production (опционально) | Например `Playbook <hello@nakhapetov.com>` |
@@ -65,6 +65,22 @@ npx wrangler pages dev dist
 | `SITE_URL` | Production | `https://nakhapetov.com` |
 
 Без `MAIL_PROVIDER_API_KEY` мейлер работает в **dry-run** (письма не уходят, факт пишется в лог Functions).
+
+### Turnstile: почему виджет мог не появляться
+
+Astro — статическая сборка. Переменная без префикса `PUBLIC_` (и runtime-only vars) **не попадает** в HTML на этапе `npm run build`. Тогда в view-source будет `data-sitekey=""` / пустой `data-turnstile-site-key`, скрипт виджета не отрисует проверку, форма уйдёт без токена → редирект `?error=turnstile`.
+
+**Шаги в Cloudflare Dashboard (без значений ключей в чат/репо):**
+
+1. Workers & Pages → проект сайта → **Settings** → **Environment variables**.
+2. Убедитесь, что есть **`TURNSTILE_SECRET`** (Encrypt / secret) — только для `/api/subscribe`.
+3. Добавьте или проверьте **`TURNSTILE_SITE_KEY`** = публичный site key из Turnstile (не secret). Окружения: Production и Preview. Этого достаточно для runtime-подстановки через `functions/_middleware.ts`.
+4. Добавьте **`PUBLIC_TURNSTILE_SITE_KEY`** с **тем же** публичным site key. Важно: переменная должна быть доступна **на этапе Build** (в UI Cloudflare — Build variables / галочка доступности при сборке, не только Runtime). Production и Preview.
+5. То же для PostHog, если аналитика пустая: `PUBLIC_POSTHOG_KEY` на Build.
+6. **Save** → **Deployments** → **Retry deployment** / новый деплой с `main`, чтобы пересобрать HTML.
+7. Проверка после деплоя (cache-bust): View Source на `/playbook/` и `/playbook/chapter-1/` — есть `challenges.cloudflare.com/turnstile`, у `.cf-turnstile` непустой `data-sitekey`, у `<body>` непустой `data-turnstile-site-key`.
+
+Site key — публичный (его видно в HTML). Secret key никогда не в `PUBLIC_*` и не в клиентский код.
 
 ## Почта (Resend)
 

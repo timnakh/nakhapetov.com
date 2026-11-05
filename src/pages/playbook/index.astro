@@ -38,7 +38,7 @@ const errorMessage = errorMessages[errorCode] ?? '';
       </p>
       {
         errorMessage && (
-          <p class="form-status" role="status">
+          <p class="form-status is-error" role="alert">
             {errorMessage}
           </p>
         )
@@ -63,9 +63,9 @@ const errorMessage = errorMessages[errorCode] ?? '';
   <EvidenceBlock page="playbook" />
 
   <section class="section" aria-labelledby="why-heading">
-    <div class="container prose-narrow">
+    <div class="container">
       <h2 class="section-title" id="why-heading">Why it exists</h2>
-      <p>
+      <p class="section-lede">
         I took one app from working code to payments on the web and on Google Play. This playbook is that route in order, written after doing it, with the mistakes left in.
       </p>
     </div>
@@ -127,7 +127,7 @@ const errorMessage = errorMessages[errorCode] ?? '';
       <h2 class="section-title" id="again-heading">Get the free chapter</h2>
       {
         errorMessage && (
-          <p class="form-status" role="status">
+          <p class="form-status is-error" role="alert">
             {errorMessage}
           </p>
         )

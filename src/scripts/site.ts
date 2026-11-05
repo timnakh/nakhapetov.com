@@ -7,6 +7,20 @@ type PostHogLike = {
   capture: (event: string, props?: Record<string, unknown>) => void;
 };
 
+type TurnstileApi = {
+  render: (
+    el: HTMLElement,
+    opts: {
+      sitekey: string;
+      theme?: string;
+      size?: string;
+      callback?: (token: string) => void;
+      'expired-callback'?: () => void;
+      'error-callback'?: () => void;
+    },
+  ) => string | number;
+};
+
 type RouteStation = {
   id: number;
   title: string;
@@ -18,6 +32,7 @@ type RouteStation = {
 declare global {
   interface Window {
     posthog?: PostHogLike;
+    turnstile?: TurnstileApi;
     __ROUTE_STATIONS__?: RouteStation[];
   }
 }
@@ -55,6 +70,7 @@ function initRoute() {
   if (!route) return;
 
   const stops = Array.from(route.querySelectorAll<HTMLElement>('[data-route-node]'));
+  const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   if (!reducedMotion) {
     const io = new IntersectionObserver(
@@ -73,7 +89,7 @@ function initRoute() {
     route.classList.add('is-drawn');
   }
 
-  function setOpen(step: number | null) {
+  function setOpen(step: number | null, track = false) {
     stops.forEach((stop) => {
       const id = Number(stop.dataset.step);
       const open = step !== null && id === step;
@@ -83,26 +99,98 @@ function initRoute() {
       stop.classList.toggle('is-open', open);
       if (card) card.hidden = !open;
     });
+    if (track && step !== null) capture('route_node_open', { step });
   }
 
   stops.forEach((stop) => {
     const btn = stop.querySelector<HTMLButtonElement>('[data-route-toggle]');
     if (!btn) return;
-    btn.addEventListener('click', () => {
-      const step = Number(stop.dataset.step);
+    const step = Number(stop.dataset.step);
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const open = btn.getAttribute('aria-expanded') === 'true';
       if (open) {
         setOpen(null);
         return;
       }
-      setOpen(step);
-      capture('route_node_open', { step });
+      setOpen(step, true);
     });
+
+    if (hoverCapable) {
+      stop.addEventListener('mouseenter', () => setOpen(step));
+      stop.addEventListener('mouseleave', () => {
+        if (btn.getAttribute('aria-expanded') === 'true') setOpen(null);
+      });
+    }
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setOpen(null);
   });
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node | null;
+    if (target && !route.contains(target)) setOpen(null);
+  });
+}
+
+function initTurnstile() {
+  const key = (document.body.dataset.turnstileSiteKey || '').trim();
+  const widgets = Array.from(document.querySelectorAll<HTMLElement>('.cf-turnstile'));
+
+  if (!key) {
+    widgets.forEach((el) => el.remove());
+    return;
+  }
+
+  const armForm = (widget: HTMLElement) => {
+    const form = widget.closest<HTMLFormElement>('form[data-turnstile-form]');
+    const btn = form?.querySelector<HTMLButtonElement>('[data-subscribe-submit]');
+    const hint = form?.querySelector<HTMLElement>('[data-turnstile-hint]');
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
+    }
+    if (hint) hint.hidden = false;
+
+    const unlock = () => {
+      if (!btn) return;
+      btn.disabled = false;
+      btn.removeAttribute('aria-disabled');
+      if (hint) hint.hidden = true;
+    };
+    const lock = () => {
+      if (!btn) return;
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
+      if (hint) hint.hidden = false;
+    };
+
+    widget.setAttribute('data-sitekey', key);
+
+    const tryRender = () => {
+      if (!window.turnstile) return false;
+      window.turnstile.render(widget, {
+        sitekey: key,
+        theme: 'light',
+        size: 'flexible',
+        callback: () => unlock(),
+        'expired-callback': () => lock(),
+        'error-callback': () => lock(),
+      });
+      return true;
+    };
+
+    if (!tryRender()) {
+      let tries = 0;
+      const timer = window.setInterval(() => {
+        if (tryRender() || ++tries > 50) window.clearInterval(timer);
+      }, 100);
+    }
+  };
+
+  widgets.forEach(armForm);
 }
 
 function initLightbox() {
@@ -232,6 +320,7 @@ function waitForPostHogAndView() {
 splitHeroWords();
 initJournalRows();
 initRoute();
+initTurnstile();
 initLightbox();
 initCopyTemplate();
 initChapter();

@@ -344,12 +344,33 @@ p:last-child {
 
 .form-status {
   margin: 1rem 0 0;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--line);
+  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--line);
   background: var(--surface);
   color: var(--ink);
   font-size: 0.95rem;
   max-width: 28rem;
+}
+
+.form-status.is-error {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, #fff);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.turnstile-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.section-lede {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--ink);
 }
 
 .edition-mark {
@@ -754,18 +775,13 @@ p:last-child {
   }
 }
 
-/* Route — метро-схема */
-.route-layout {
-  display: grid;
-  gap: 2rem;
+/* Route — хроника сверху full width, метро под ней */
+.route-chronicle {
+  margin: 0 0 2.25rem;
 }
 
-@media (min-width: 900px) {
-  .route-layout {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    align-items: start;
-    gap: 2.5rem;
-  }
+.route-chronicle .eyebrow {
+  margin: 0 0 0.75rem;
 }
 
 .milestone-log {
@@ -797,7 +813,7 @@ p:last-child {
 
 .route {
   position: relative;
-  padding: 0.25rem 0 0.25rem 0.85rem;
+  padding: 0.5rem 0 0.25rem 0.85rem;
 }
 
 .metro {
@@ -814,7 +830,7 @@ p:last-child {
 .metro-line {
   position: absolute;
   left: 0.85rem;
-  top: 1.1rem;
+  top: 2.35rem;
   bottom: 1.1rem;
   width: 3px;
   background: var(--line);
@@ -844,9 +860,11 @@ p:last-child {
 .metro-station {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
+  grid-template-areas:
+    'num num'
+    'dot title';
   column-gap: 0.65rem;
-  row-gap: 0.15rem;
+  row-gap: 0.2rem;
   align-items: center;
   width: 100%;
   text-align: left;
@@ -858,14 +876,29 @@ p:last-child {
   font: inherit;
 }
 
+.metro-num {
+  grid-area: num;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
 .metro-dot {
-  grid-row: 1 / span 2;
+  grid-area: dot;
   width: 0.95rem;
   height: 0.95rem;
   border: 2.5px solid var(--accent);
   border-radius: 50%;
   background: var(--bg);
   box-shadow: 0 0 0 4px var(--bg);
+}
+
+.metro-title {
+  grid-area: title;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.15;
 }
 
 .metro-stop.is-available .metro-dot,
@@ -877,20 +910,6 @@ p:last-child {
 .metro-station[aria-expanded='true'] .metro-dot {
   background: var(--accent);
   border-color: var(--accent);
-}
-
-.metro-num {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-}
-
-.metro-title {
-  grid-column: 2;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  line-height: 1.15;
 }
 
 .metro-card {
@@ -941,7 +960,8 @@ p:last-child {
 @media (min-width: 768px) {
   .route {
     padding-left: 0;
-    padding-top: 1.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 
   .metro {
@@ -951,10 +971,11 @@ p:last-child {
     gap: 0.35rem;
   }
 
+  /* Line through station dots; numbers sit above the line */
   .metro-line {
     left: 1.4rem;
     right: 1.4rem;
-    top: 2.55rem;
+    top: 2.85rem;
     bottom: auto;
     width: auto;
     height: 3px;
@@ -979,23 +1000,25 @@ p:last-child {
 
   .metro-station {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      'num'
+      'dot'
+      'title';
     justify-items: center;
     text-align: center;
-    row-gap: 0.35rem;
-  }
-
-  .metro-dot {
-    grid-row: auto;
-    margin-bottom: 0.15rem;
+    row-gap: 0.4rem;
   }
 
   .metro-num {
-    order: -1;
+    font-size: 0.78rem;
+    color: var(--ink);
+  }
+
+  .metro-dot {
+    margin: 0;
   }
 
   .metro-title {
-    grid-column: auto;
     font-size: 1.05rem;
   }
 
@@ -1007,6 +1030,12 @@ p:last-child {
     z-index: 3;
     margin: 0;
     width: min(17rem, 72vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metro-line-draw {
+    transition: none;
   }
 }
 

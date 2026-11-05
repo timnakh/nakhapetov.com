@@ -11,97 +11,94 @@ const figs = figNumbersForPage('playbook');
     <p class="margin-note">Field notes · real dates</p>
     <h2 class="section-title" id="route-heading">The route</h2>
 
-    <div class="route-layout">
-      <div>
-        <h3 class="eyebrow" style="margin-bottom: 0.75rem;">Milestone log</h3>
-        <ol class="milestone-log">
-          {
-            milestones.map((m) => {
-              const figN = m.fig ? figs[m.fig] : undefined;
-              return (
-                <li>
-                  <span class="milestone-date">{m.date}</span>
-                  <span class="milestone-event">
-                    {m.href ? (
-                      <a href={m.href} rel="noopener noreferrer" target="_blank">
-                        {m.event}
+    <div class="route-chronicle">
+      <h3 class="eyebrow">Milestone log</h3>
+      <ol class="milestone-log">
+        {
+          milestones.map((m) => {
+            const figN = m.fig ? figs[m.fig] : undefined;
+            return (
+              <li>
+                <span class="milestone-date">{m.date}</span>
+                <span class="milestone-event">
+                  {m.href ? (
+                    <a href={m.href} rel="noopener noreferrer" target="_blank">
+                      {m.event}
+                    </a>
+                  ) : (
+                    m.event
+                  )}
+                  {figN ? (
+                    <>
+                      {' '}
+                      <a class="fig-ref" href={`#evidence`}>
+                        Fig. {figN}
                       </a>
-                    ) : (
-                      m.event
-                    )}
-                    {figN ? (
+                    </>
+                  ) : null}
+                </span>
+              </li>
+            );
+          })
+        }
+      </ol>
+    </div>
+
+    <div class="route" data-route>
+      <ol class="metro" role="list">
+        {
+          routeStations.map((node) => {
+            const num = String(node.id).padStart(2, '0');
+            return (
+              <li
+                class:list={['metro-stop', node.chapterHref && 'is-available']}
+                data-route-node
+                data-step={node.id}
+              >
+                <button
+                  type="button"
+                  class="metro-station"
+                  aria-expanded="false"
+                  aria-controls={`route-card-${node.id}`}
+                  data-route-toggle
+                >
+                  <span class="metro-num">{num}</span>
+                  <span class="metro-dot" aria-hidden="true"></span>
+                  <span class="metro-title">{node.title}</span>
+                </button>
+                <div
+                  class="metro-card"
+                  id={`route-card-${node.id}`}
+                  data-route-card
+                  hidden
+                >
+                  <p class="metro-card-title">{node.title}</p>
+                  <p class="metro-card-tip">{node.tip}</p>
+                  {
+                    node.chapterHref ? (
                       <>
-                        {' '}
-                        <a class="fig-ref" href={`#evidence`}>
-                          Fig. {figN}
+                        <p class="trap-mark">{node.trap}</p>
+                        <a class="btn btn-ghost" href={node.chapterHref}>
+                          Read the free chapter
                         </a>
                       </>
-                    ) : null}
-                  </span>
-                </li>
-              );
-            })
-          }
-        </ol>
+                    ) : (
+                      <p class="edition-mark">In the full edition</p>
+                    )
+                  }
+                </div>
+              </li>
+            );
+          })
+        }
+      </ol>
+      <div class="metro-line" aria-hidden="true">
+        <div class="metro-line-draw" data-metro-draw></div>
       </div>
 
-      <div class="route" data-route>
-        <ol class="metro" role="list">
-          {
-            routeStations.map((node) => {
-              const open = node.id === 1;
-              const num = String(node.id).padStart(2, '0');
-              return (
-                <li
-                  class:list={['metro-stop', open && 'is-open', node.chapterHref && 'is-available']}
-                  data-route-node
-                  data-step={node.id}
-                >
-                  <button
-                    type="button"
-                    class="metro-station"
-                    aria-expanded={open ? 'true' : 'false'}
-                    aria-controls={`route-card-${node.id}`}
-                    data-route-toggle
-                  >
-                    <span class="metro-dot" aria-hidden="true"></span>
-                    <span class="metro-num">{num}</span>
-                    <span class="metro-title">{node.title}</span>
-                  </button>
-                  <div
-                    class="metro-card"
-                    id={`route-card-${node.id}`}
-                    data-route-card
-                    hidden={!open}
-                  >
-                    <p class="metro-card-title">{node.title}</p>
-                    <p class="metro-card-tip">{node.tip}</p>
-                    {
-                      node.chapterHref ? (
-                        <>
-                          <p class="trap-mark">{node.trap}</p>
-                          <a class="btn btn-ghost" href={node.chapterHref}>
-                            Read the free chapter
-                          </a>
-                        </>
-                      ) : (
-                        <p class="edition-mark">In the full edition</p>
-                      )
-                    }
-                  </div>
-                </li>
-              );
-            })
-          }
-        </ol>
-        <div class="metro-line" aria-hidden="true">
-          <div class="metro-line-draw" data-metro-draw></div>
-        </div>
-
-        <script is:inline define:vars={{ stations: routeStations }}>
-          window.__ROUTE_STATIONS__ = stations;
-        </script>
-      </div>
+      <script is:inline define:vars={{ stations: routeStations }}>
+        window.__ROUTE_STATIONS__ = stations;
+      </script>
     </div>
   </div>
 </section>
