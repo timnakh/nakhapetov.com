@@ -1,6 +1,7 @@
 ---
 import { routeStations } from '../data/route';
 import { milestones } from '../data/log';
+import { figNumbersForPage } from '../data/proof';
 
 /** Координаты станций вдоль SVG-тропы (viewBox 0 0 640 280) */
 const points = [
@@ -16,6 +17,8 @@ const points = [
 const pathD = points
   .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
   .join(' ');
+
+const figs = figNumbersForPage('playbook');
 ---
 
 <section class="section" aria-labelledby="route-heading">
@@ -28,12 +31,31 @@ const pathD = points
         <h3 class="eyebrow" style="margin-bottom: 0.75rem;">Milestone log</h3>
         <ol class="milestone-log">
           {
-            milestones.map((m) => (
-              <li>
-                <span class="milestone-date">{m.date}</span>
-                <span class="milestone-event">{m.event}</span>
-              </li>
-            ))
+            milestones.map((m) => {
+              const figN = m.fig ? figs[m.fig] : undefined;
+              return (
+                <li>
+                  <span class="milestone-date">{m.date}</span>
+                  <span class="milestone-event">
+                    {m.href ? (
+                      <a href={m.href} rel="noopener noreferrer" target="_blank">
+                        {m.event}
+                      </a>
+                    ) : (
+                      m.event
+                    )}
+                    {figN ? (
+                      <>
+                        {' '}
+                        <a class="fig-ref" href={`#evidence`}>
+                          Fig. {figN}
+                        </a>
+                      </>
+                    ) : null}
+                  </span>
+                </li>
+              );
+            })
           }
         </ol>
       </div>
@@ -91,7 +113,11 @@ const pathD = points
                       <span class="trap-mark">{node.trap}</span>
                       <br />
                       {node.tip} ·{' '}
-                      <a href={node.chapterHref}>Open chapter</a>
+                      {node.chapterHref ? (
+                        <a href={node.chapterHref}>Read the free chapter</a>
+                      ) : (
+                        <span class="edition-mark">In the full edition</span>
+                      )}
                     </span>
                   </span>
                 </button>
@@ -103,7 +129,8 @@ const pathD = points
         <div class="route-panel" data-route-panel hidden>
           <p class="trap-mark" data-route-trap></p>
           <p class="tip" data-route-tip></p>
-          <a class="btn btn-ghost" data-route-link href="#">Open chapter</a>
+          <a class="btn btn-ghost" data-route-link href="#" hidden>Read the free chapter</a>
+          <span class="edition-mark" data-route-full hidden>In the full edition</span>
         </div>
 
         <script is:inline define:vars={{ stations: routeStations }}>

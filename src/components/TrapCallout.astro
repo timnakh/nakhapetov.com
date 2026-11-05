@@ -1,0 +1,11 @@
+---
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<aside class="trap-callout">
+  <p class="trap-mark">Trap</p>
+  <p class="trap-body"><strong>{title}</strong> <slot /></p>
+</aside>

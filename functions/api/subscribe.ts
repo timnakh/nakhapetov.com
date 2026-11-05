@@ -73,12 +73,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   await mailer.send({
     to: email,
     subject: 'Confirm your email for the Playbook',
+    replyTo: 'hello@nakhapetov.com',
     html: `
-      <div style="font-family:system-ui,sans-serif;background:#14161F;color:#F4F1EA;padding:32px;">
-        <h1 style="font-size:22px;margin:0 0 12px;">Confirm your email</h1>
-        <p style="color:#B8BCCB;line-height:1.5;">One click to get the free chapter of the Indie Launch Playbook. This link expires in 48 hours.</p>
-        <p style="margin:28px 0;"><a href="${confirmUrl}" style="display:inline-block;background:#E8A33D;color:#14161F;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Confirm email</a></p>
-        <p style="color:#B8BCCB;font-size:13px;">Or open this URL:<br/>${confirmUrl}</p>
+      <div style="font-family:Georgia,serif;background:#F2EFE8;color:#111111;padding:32px;max-width:560px;">
+        <h1 style="font-size:22px;margin:0 0 12px;font-weight:400;">Confirm your email</h1>
+        <p style="color:#4A463E;line-height:1.55;">One click to get the free chapter of the Indie Launch Playbook. This link expires in 48 hours.</p>
+        <p style="margin:28px 0;"><a href="${confirmUrl}" style="display:inline-block;background:#1F3BFF;color:#ffffff;padding:12px 20px;text-decoration:none;">Confirm email</a></p>
+        <p style="color:#4A463E;font-size:13px;">Or open this URL:<br/>${confirmUrl}</p>
         ${footer.html}
       </div>
     `,

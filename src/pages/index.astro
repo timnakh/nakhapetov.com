@@ -4,9 +4,11 @@ import ProjectCard from '../components/ProjectCard.astro';
 import { projects } from '../data/projects';
 import { site } from '../data/playbook';
 import { milestones } from '../data/log';
+import { figNumbersForPage } from '../data/proof';
 
 const journal = projects.filter((p) => !p.featuredWorld);
 const worlds = projects.filter((p) => p.featuredWorld);
+const figs = figNumbersForPage('playbook');
 ---
 
 <BaseLayout
@@ -23,7 +25,7 @@ const worlds = projects.filter((p) => p.featuredWorld);
           I build small apps. Then I write down how it was done.
         </h1>
         <p class="lede">
-          Indie developer. Everything here is something I shipped, charged for, or learned the hard way.
+          Indie developer. Everything here is something I shipped or learned the hard way.
         </p>
         <p class="updated">Updated Nov 2026</p>
         <div class="cta-row">
@@ -36,12 +38,31 @@ const worlds = projects.filter((p) => p.featuredWorld);
         <p class="margin-note" id="hero-log-heading">Log</p>
         <ol class="milestone-log">
           {
-            milestones.map((m) => (
-              <li>
-                <span class="milestone-date">{m.date}</span>
-                <span class="milestone-event">{m.event}</span>
-              </li>
-            ))
+            milestones.map((m) => {
+              const figN = m.fig ? figs[m.fig] : undefined;
+              return (
+                <li>
+                  <span class="milestone-date">{m.date}</span>
+                  <span class="milestone-event">
+                    {m.href ? (
+                      <a href={m.href} rel="noopener noreferrer" target="_blank">
+                        {m.event}
+                      </a>
+                    ) : (
+                      m.event
+                    )}
+                    {figN ? (
+                      <>
+                        {' '}
+                        <a class="fig-ref" href={`/playbook#evidence`}>
+                          Fig. {figN}
+                        </a>
+                      </>
+                    ) : null}
+                  </span>
+                </li>
+              );
+            })
           }
         </ol>
       </aside>
@@ -52,7 +73,7 @@ const worlds = projects.filter((p) => p.featuredWorld);
 
   <section class="section" id="projects" aria-labelledby="projects-heading">
     <div class="container">
-      <p class="margin-note">Log entries</p>
+      <p class="sr-only">Log entries</p>
       <h2 class="section-title" id="projects-heading">Projects</h2>
 
       {worlds.map((project, i) => <ProjectCard project={project} index={i} />)}

@@ -2,9 +2,23 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SubscribeForm from '../../components/SubscribeForm.astro';
 import RouteMap from '../../components/RouteMap.astro';
+import EvidenceBlock from '../../components/EvidenceBlock.astro';
 import { playbook } from '../../data/playbook';
 
 const showBuy = Boolean(playbook.checkoutUrl);
+
+const errorMessages: Record<string, string> = {
+  turnstile: 'Please confirm you are human and try again.',
+  email: 'That email address does not look right. Please check and try again.',
+  rate_limit: 'Too many attempts. Please wait a few minutes and try again.',
+  token: 'That confirmation link is no longer valid. Enter your email again to get a new one.',
+  config: 'Something went wrong on our side. Please try again later.',
+  invalid: 'Something went wrong. Please try again.',
+  already: 'You are already on the list. Check your inbox for the chapter link.',
+};
+
+const errorCode = Astro.url.searchParams.get('error') ?? '';
+const errorMessage = errorMessages[errorCode] ?? '';
 ---
 
 <BaseLayout
@@ -15,15 +29,20 @@ const showBuy = Boolean(playbook.checkoutUrl);
 >
   <section class="page-hero">
     <div class="container">
-      <p class="margin-note">Playbook · free chapter</p>
-      <p class="eyebrow">The Indie Launch Playbook</p>
+      <p class="margin-note">Free chapter · Updated Nov 2026</p>
       <h1 class="hero-title" data-word-reveal style="font-size: clamp(2.2rem, 6vw, 4rem); max-width: 16ch;">
         From vibe-coded app to paid product
       </h1>
       <p class="lede">
         Web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.
       </p>
-      <p class="updated">Updated Nov 2026</p>
+      {
+        errorMessage && (
+          <p class="form-status" role="status">
+            {errorMessage}
+          </p>
+        )
+      }
       <div style="margin-top: 2rem;">
         <SubscribeForm id="subscribe-hero" />
       </div>
@@ -41,38 +60,7 @@ const showBuy = Boolean(playbook.checkoutUrl);
 
   <RouteMap />
 
-  <section class="section" aria-labelledby="evidence-heading">
-    <div class="container">
-      <p class="margin-note">Proof · screenshots</p>
-      <h2 class="section-title" id="evidence-heading">Evidence</h2>
-      <div class="evidence-grid">
-        <figure>
-          <div class="shot-slot">
-            <span class="shot-label">screenshot pending</span>
-          </div>
-          <figcaption class="fig-cap">Fig. 2. Paddle dashboard — live payments (asset pending).</figcaption>
-        </figure>
-        <figure>
-          <div class="shot-slot">
-            <span class="shot-label">screenshot pending</span>
-          </div>
-          <figcaption class="fig-cap">Fig. 3. Play Console, Nov 2. Review approved.</figcaption>
-        </figure>
-        <figure>
-          <div class="shot-slot">
-            <span class="shot-label">screenshot pending</span>
-          </div>
-          <figcaption class="fig-cap">Fig. 4. Play Console — subscriptions created (asset pending).</figcaption>
-        </figure>
-        <figure>
-          <div class="shot-slot">
-            <span class="shot-label">screenshot pending</span>
-          </div>
-          <figcaption class="fig-cap">Fig. 5. Review email — personal data redacted (asset pending).</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
+  <EvidenceBlock page="playbook" />
 
   <section class="section" aria-labelledby="why-heading">
     <div class="container prose-narrow">
@@ -137,6 +125,13 @@ const showBuy = Boolean(playbook.checkoutUrl);
   <section class="section" aria-labelledby="again-heading">
     <div class="container">
       <h2 class="section-title" id="again-heading">Get the free chapter</h2>
+      {
+        errorMessage && (
+          <p class="form-status" role="status">
+            {errorMessage}
+          </p>
+        )
+      }
       <SubscribeForm id="subscribe-footer" />
       {
         showBuy && (

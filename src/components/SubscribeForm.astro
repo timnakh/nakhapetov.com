@@ -6,9 +6,18 @@
 interface Props {
   id?: string;
   compact?: boolean;
+  hint?: string;
+  buttonLabel?: string;
+  eventName?: string;
 }
 
-const { id = 'subscribe', compact = false } = Astro.props;
+const {
+  id = 'subscribe',
+  compact = false,
+  hint = 'One email with the chapter, one when the full edition is ready. Unsubscribe any time.',
+  buttonLabel = 'Get the free chapter',
+  eventName = 'subscribe_submit',
+} = Astro.props;
 ---
 
 <form
@@ -17,6 +26,7 @@ const { id = 'subscribe', compact = false } = Astro.props;
   method="POST"
   action="/api/subscribe"
   data-analytics="subscribe"
+  data-subscribe-event={eventName}
 >
   <label class="sr-only" for={`${id}-email`}>Email</label>
   <div class="row">
@@ -29,12 +39,18 @@ const { id = 'subscribe', compact = false } = Astro.props;
       inputmode="email"
       placeholder="you@example.com"
     />
-    {/* honeypot — боты заполняют, люди не видят */}
-    <label class="hp" aria-hidden="true">
-      Company
-      <input type="text" name="company" tabindex="-1" autocomplete="off" />
-    </label>
-    <button class="btn btn-primary" type="submit">Get the free chapter</button>
+    {/* honeypot — off-screen, hidden from AT and Tab */}
+    <div class="hp" aria-hidden="true">
+      <label for={`${id}-company`}>Company</label>
+      <input
+        id={`${id}-company`}
+        type="text"
+        name="company"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+    <button class="btn btn-primary" type="submit">{buttonLabel}</button>
   </div>
   <div
     class="cf-turnstile"
@@ -43,17 +59,10 @@ const { id = 'subscribe', compact = false } = Astro.props;
     data-size="flexible"
   >
   </div>
-  {
-    !compact && (
-      <p class="hint">
-        One email with the chapter, one when the full edition is ready. Unsubscribe any time.
-      </p>
-    )
-  }
+  {!compact && <p class="hint">{hint}</p>}
 </form>
 
 <script>
-  // Подставляем site key из data-атрибута body (PUBLIC_TURNSTILE_SITE_KEY)
   const key = document.body.dataset.turnstileSiteKey || '';
   document.querySelectorAll('.cf-turnstile').forEach((el) => {
     if (key) el.setAttribute('data-sitekey', key);

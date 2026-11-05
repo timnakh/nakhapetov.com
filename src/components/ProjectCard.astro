@@ -1,5 +1,6 @@
 ---
 import type { Project } from '../data/projects';
+import LjMedia from './LjMedia.astro';
 
 interface Props {
   project: Project;
@@ -22,31 +23,7 @@ const num = String(index + 1).padStart(2, '0');
         {project.status}
       </p>
       <p>{project.description}</p>
-      {project.image ? (
-        <>
-          <div class="lj-frame">
-            <img
-              src={project.image}
-              alt={project.imageAlt ?? ''}
-              loading="lazy"
-              width="640"
-              height="400"
-            />
-          </div>
-          <p class="fig-cap" style="color: var(--lj-muted);">
-            Fig. 1. Life Journey RPG — app world.
-          </p>
-        </>
-      ) : (
-        <>
-          <div class="lj-frame shot-pending" role="img" aria-label="screenshot pending">
-            <span class="shot-label">screenshot pending</span>
-          </div>
-          <p class="fig-cap" style="color: var(--lj-muted);">
-            Fig. 1. Life Journey RPG — app world (asset pending).
-          </p>
-        </>
-      )}
+      <LjMedia />
       <div class="project-actions">
         <a
           class="btn btn-primary"

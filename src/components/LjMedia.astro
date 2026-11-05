@@ -1,0 +1,61 @@
+---
+import { ljHero, ljMascot, enabledPhones, ljSrc } from '../data/lj-media';
+
+const phones = enabledPhones();
+---
+
+<div class="lj-media">
+  <div class="lj-hero-row">
+    <picture class="lj-hero">
+      <source srcset={ljSrc(ljHero.file, 'avif')} type="image/avif" />
+      <source srcset={ljSrc(ljHero.file, 'webp')} type="image/webp" />
+      <img
+        src={ljSrc(ljHero.file, 'jpg')}
+        alt={ljHero.alt}
+        width={ljHero.width}
+        height={ljHero.height}
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+    <picture class="lj-mascot">
+      <source srcset={ljSrc(ljMascot.file, 'avif')} type="image/avif" />
+      <source srcset={ljSrc(ljMascot.file, 'webp')} type="image/webp" />
+      <img
+        src={ljSrc(ljMascot.file, 'webp')}
+        alt={ljMascot.alt}
+        width={ljMascot.width}
+        height={ljMascot.height}
+        loading="lazy"
+        decoding="async"
+        class="pixelated"
+      />
+    </picture>
+  </div>
+  <p class="fig-cap" style="color: var(--lj-muted);">{ljHero.caption}</p>
+
+  {
+    phones.length > 0 && (
+      <div class="lj-phones" role="list" aria-label="App screens">
+        {phones.map((phone) => (
+          <div class="phone-frame" role="listitem">
+            <div class="phone-bezel">
+              <picture>
+                <source srcset={ljSrc(phone.file, 'avif')} type="image/avif" />
+                <source srcset={ljSrc(phone.file, 'webp')} type="image/webp" />
+                <img
+                  src={ljSrc(phone.file, 'png')}
+                  alt={phone.alt}
+                  width={phone.width}
+                  height={phone.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+</div>

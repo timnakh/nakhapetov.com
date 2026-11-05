@@ -1,0 +1,52 @@
+---
+interface Props {
+  src: string | null;
+  alt: string;
+  caption: string;
+  figNumber: number;
+  missing?: boolean;
+  width?: number;
+  height?: number;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  figNumber,
+  missing = false,
+  width = 960,
+  height = 600,
+} = Astro.props;
+
+const fullCaption = `Fig. ${figNumber}. ${caption}`;
+---
+
+<figure class="proof-figure" data-proof-figure>
+  {
+    src && !missing ? (
+      <button
+        type="button"
+        class="proof-thumb"
+        data-lightbox-open
+        data-lightbox-src={src}
+        data-lightbox-alt={alt}
+        aria-label={`Enlarge: ${alt}`}
+      >
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          loading="lazy"
+          decoding="async"
+        />
+      </button>
+    ) : (
+      <div class="shot-slot" role="img" aria-label={`${alt} — asset pending`}>
+        <span class="shot-label">asset pending · dev only</span>
+      </div>
+    )
+  }
+  <figcaption class="fig-cap">{fullCaption}</figcaption>
+</figure>

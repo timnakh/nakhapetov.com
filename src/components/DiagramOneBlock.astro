@@ -1,0 +1,83 @@
+---
+---
+
+<figure class="diagram-figure">
+  <svg
+    class="diagram-svg"
+    viewBox="0 0 640 280"
+    role="img"
+    aria-label="Diagram: one canonical block feeding four platform checks — D-U-N-S, Google Play, bank, and payment provider"
+    width="640"
+    height="280"
+  >
+    <title>One block, four checks</title>
+    <rect
+      x="24"
+      y="90"
+      width="160"
+      height="100"
+      rx="2"
+      fill="#ebe7dc"
+      stroke="#111111"
+      stroke-width="1.5"></rect>
+    <text
+      x="104"
+      y="135"
+      text-anchor="middle"
+      font-family="IBM Plex Mono, ui-monospace, monospace"
+      font-size="13"
+      fill="#111111">Canonical</text
+    >
+    <text
+      x="104"
+      y="155"
+      text-anchor="middle"
+      font-family="IBM Plex Mono, ui-monospace, monospace"
+      font-size="13"
+      fill="#111111">block</text
+    >
+
+    {
+      [
+        { x: 420, y: 28, label: 'D-U-N-S' },
+        { x: 420, y: 88, label: 'Google Play' },
+        { x: 420, y: 148, label: 'Bank' },
+        { x: 420, y: 208, label: 'Payment provider' },
+      ].map((box) => (
+        <>
+          <line
+            x1="184"
+            y1="140"
+            x2={box.x}
+            y2={box.y + 22}
+            stroke="#1f3bff"
+            stroke-width="1.5"
+          />
+          <rect
+            x={box.x}
+            y={box.y}
+            width="196"
+            height="44"
+            rx="2"
+            fill="#f2efe8"
+            stroke="#cfc9bc"
+            stroke-width="1.5"
+          />
+          <text
+            x={box.x + 98}
+            y={box.y + 27}
+            text-anchor="middle"
+            font-family="Instrument Sans, system-ui, sans-serif"
+            font-size="14"
+            fill="#111111"
+          >
+            {box.label}
+          </text>
+        </>
+      ))
+    }
+  </svg>
+  <figcaption class="fig-cap">
+    Fig. 1. Every platform compares the same strings.
+  </figcaption>
+</figure>

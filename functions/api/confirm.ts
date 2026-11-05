@@ -35,8 +35,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   const mailer = createMailer(env);
   const audienceId = env.MAIL_LIST_ID;
+  let already = false;
   if (audienceId) {
-    await mailer.addContact({ email: verified.email, audienceId });
+    const result = await mailer.addContact({ email: verified.email, audienceId });
+    already = result.id === 'existing';
   } else {
     console.warn('[confirm] MAIL_LIST_ID missing — contact not added to audience');
   }
@@ -46,17 +48,24 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   await mailer.send({
     to: verified.email,
-    subject: 'Your free chapter of the Indie Launch Playbook',
+    subject: 'Chapter 1: Identity and entity',
+    replyTo: 'hello@nakhapetov.com',
     html: `
-      <div style="font-family:system-ui,sans-serif;background:#14161F;color:#F4F1EA;padding:32px;">
-        <h1 style="font-size:22px;margin:0 0 12px;">Here's your free chapter</h1>
-        <p style="color:#B8BCCB;line-height:1.5;">Thanks for confirming. Read the free chapter online — and you'll get one more email when the full edition is ready.</p>
-        <p style="margin:28px 0;"><a href="${chapterUrl}" style="display:inline-block;background:#E8A33D;color:#14161F;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Read the free chapter</a></p>
+      <div style="font-family:Georgia,serif;background:#F2EFE8;color:#111111;padding:32px;max-width:560px;">
+        <h1 style="font-size:22px;margin:0 0 12px;font-weight:400;">Chapter 1: Identity and entity</h1>
+        <p style="color:#4A463E;line-height:1.55;">Thanks for confirming. Your free chapter is ready.</p>
+        <p style="margin:28px 0;"><a href="${chapterUrl}" style="display:inline-block;background:#1F3BFF;color:#ffffff;padding:12px 20px;text-decoration:none;">Read the free chapter</a></p>
+        <p style="color:#4A463E;line-height:1.55;">Reply to this email if something looks outdated.</p>
         ${footer.html}
       </div>
     `,
-    text: `Here's your free chapter of the Indie Launch Playbook\n\nRead it here: ${chapterUrl}${footer.text}`,
+    text: `Chapter 1: Identity and entity\n\nRead it here: ${chapterUrl}\n\nReply to this email if something looks outdated.${footer.text}`,
   });
+
+  if (already) {
+    // Still send the chapter; land on thanks without a technical error.
+    return redirect(`${siteUrl}/playbook/thanks`);
+  }
 
   return redirect(`${siteUrl}/playbook/thanks`);
 };

@@ -9,6 +9,7 @@ export interface MailMessage {
   html: string;
   text: string;
   from?: string;
+  replyTo?: string;
   headers?: Record<string, string>;
 }
 
@@ -28,7 +29,8 @@ type Env = {
   MAIL_DRY_RUN?: string;
 };
 
-const DEFAULT_FROM = 'Playbook <hello@nakhapetov.com>';
+const DEFAULT_FROM = 'Tim Nakhapetov <hello@nakhapetov.com>';
+const DEFAULT_REPLY_TO = 'hello@nakhapetov.com';
 
 export function createMailer(env: Env): Mailer {
   const apiKey = env.MAIL_PROVIDER_API_KEY;
@@ -42,6 +44,7 @@ export function createMailer(env: Env): Mailer {
           to: message.to,
           subject: message.subject,
           from: message.from || from,
+          replyTo: message.replyTo || DEFAULT_REPLY_TO,
         });
         return { id: `dry-${Date.now()}`, dryRun: true };
       },
@@ -66,6 +69,7 @@ export function createMailer(env: Env): Mailer {
           subject: message.subject,
           html: message.html,
           text: message.text,
+          reply_to: message.replyTo || DEFAULT_REPLY_TO,
           headers: message.headers,
         }),
       });
@@ -105,7 +109,7 @@ export function createMailer(env: Env): Mailer {
 export function unsubscribeFooter(email: string, siteUrl: string): { html: string; text: string } {
   const unsub = `${siteUrl}/privacy#unsubscribe`;
   return {
-    html: `<p style="color:#B8BCCB;font-size:13px;margin-top:32px;">You received this because you asked for the Indie Launch Playbook.<br/><a href="${unsub}">Unsubscribe</a> · <a href="mailto:hello@nakhapetov.com">hello@nakhapetov.com</a></p>`,
+    html: `<p style="color:#4A463E;font-size:13px;margin-top:32px;">You received this because you asked for the Indie Launch Playbook.<br/><a href="${unsub}">Unsubscribe</a> · <a href="mailto:hello@nakhapetov.com">hello@nakhapetov.com</a></p>`,
     text: `\n\nUnsubscribe: ${unsub}\nContact: hello@nakhapetov.com\n(Requested for: ${email})`,
   };
 }
