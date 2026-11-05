@@ -29,7 +29,7 @@ const {
 const canonical = new URL(canonicalPath, site.url).toString();
 const ogAbsolute = new URL(ogImage, site.url).toString();
 const fullTitle = title.includes(site.name) ? title : `${title} · ${site.name}`;
-const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+const turnstileSiteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
 const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
 ---
 
@@ -65,15 +65,12 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
     }
     <slot name="head" />
 
-    {
-      turnstileSiteKey && (
-        <script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-          async
-          defer
-        />
-      )
-    }
+    {/* Explicit render: key may arrive at build (PUBLIC_) or via Pages middleware at request time */}
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      async
+      defer
+    ></script>
     {
       posthogKey && (
         <script is:inline define:vars={{ posthogKey }}>

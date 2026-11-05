@@ -2,6 +2,7 @@
 /**
  * Форма «получить бесплатную главу».
  * Работает без JS: обычный POST + редирект со стороны Functions.
+ * Site key: PUBLIC_TURNSTILE_SITE_KEY на сборке и/или runtime-инъекция в _middleware.
  */
 interface Props {
   id?: string;
@@ -18,6 +19,8 @@ const {
   buttonLabel = 'Get the free chapter',
   eventName = 'subscribe_submit',
 } = Astro.props;
+
+const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
 ---
 
 <form
@@ -27,6 +30,7 @@ const {
   action="/api/subscribe"
   data-analytics="subscribe"
   data-subscribe-event={eventName}
+  data-turnstile-form
 >
   <label class="sr-only" for={`${id}-email`}>Email</label>
   <div class="row">
@@ -50,22 +54,19 @@ const {
         autocomplete="off"
       />
     </div>
-    <button class="btn btn-primary" type="submit">{buttonLabel}</button>
+    <button class="btn btn-primary" type="submit" data-subscribe-submit>
+      {buttonLabel}
+    </button>
   </div>
   <div
     class="cf-turnstile"
-    data-sitekey=""
+    data-sitekey={siteKey}
     data-theme="light"
     data-size="flexible"
   >
   </div>
+  <p class="turnstile-hint" data-turnstile-hint hidden>
+    Complete the check above to enable submit.
+  </p>
   {!compact && <p class="hint">{hint}</p>}
 </form>
-
-<script>
-  const key = document.body.dataset.turnstileSiteKey || '';
-  document.querySelectorAll('.cf-turnstile').forEach((el) => {
-    if (key) el.setAttribute('data-sitekey', key);
-    else el.remove();
-  });
-</script>
