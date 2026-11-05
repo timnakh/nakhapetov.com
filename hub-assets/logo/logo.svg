@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="N key">
+  <!-- Cream N-key for light surfaces. Flat; proportions from logo pack. -->
+  <rect x="10" y="10" width="108" height="108" rx="22" ry="22" fill="#F2EFE8" stroke="#111111" stroke-width="2.5"/>
+  <path fill="#111111" d="M20.4 24.1h14.6L64.6 78.2V24.1h14.6v68.7H64.6L35 38.7v54.1H20.4V24.1z"/>
+  <rect x="86.8" y="83.7" width="20.9" height="9.2" fill="#1F3BFF"/>
+</svg>

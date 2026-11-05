@@ -37,24 +37,34 @@ const phones = enabledPhones();
   {
     phones.length > 0 && (
       <div class="lj-phones" role="list" aria-label="App screens">
-        {phones.map((phone) => (
-          <div class="phone-frame" role="listitem">
-            <div class="phone-bezel">
-              <picture>
-                <source srcset={ljSrc(phone.file, 'avif')} type="image/avif" />
-                <source srcset={ljSrc(phone.file, 'webp')} type="image/webp" />
-                <img
-                  src={ljSrc(phone.file, 'png')}
-                  alt={phone.alt}
-                  width={phone.width}
-                  height={phone.height}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
+        {phones.map((phone) => {
+          const src = ljSrc(phone.file, 'png');
+          return (
+            <div class="phone-frame" role="listitem">
+              <button
+                type="button"
+                class="phone-bezel"
+                data-lightbox-open
+                data-lightbox-src={src}
+                data-lightbox-alt={phone.alt}
+                aria-label={`Enlarge: ${phone.alt}`}
+              >
+                <picture>
+                  <source srcset={ljSrc(phone.file, 'avif')} type="image/avif" />
+                  <source srcset={ljSrc(phone.file, 'webp')} type="image/webp" />
+                  <img
+                    src={src}
+                    alt={phone.alt}
+                    width={phone.width}
+                    height={phone.height}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              </button>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     )
   }

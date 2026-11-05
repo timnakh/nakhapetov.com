@@ -60,6 +60,21 @@ const num = String(index + 1).padStart(2, '0');
         )}
       </div>
     </article>
+  ) : project.id === 'playbook' ? (
+    <article class="playbook-card" data-project={project.id}>
+      <p class="margin-note">Note {num} · {project.year}</p>
+      <h3 class="journal-title">{project.name}</h3>
+      <p class="playbook-card-kicker">{project.status}</p>
+      <p class="playbook-card-desc">{project.description}</p>
+      <a
+        class="btn btn-primary"
+        href={project.cta.href}
+        data-event="project_card_click"
+        data-project={project.id}
+      >
+        {project.cta.label}
+      </a>
+    </article>
   ) : (
     <a
       class="journal-row"

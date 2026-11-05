@@ -6,8 +6,9 @@ import { site } from '../data/playbook';
 import { milestones } from '../data/log';
 import { figNumbersForPage } from '../data/proof';
 
-const journal = projects.filter((p) => !p.featuredWorld);
+const journal = projects.filter((p) => !p.featuredWorld && p.id !== 'playbook');
 const worlds = projects.filter((p) => p.featuredWorld);
+const playbookProject = projects.find((p) => p.id === 'playbook');
 const figs = figNumbersForPage('playbook');
 ---
 
@@ -78,13 +79,21 @@ const figs = figNumbersForPage('playbook');
 
       {worlds.map((project, i) => <ProjectCard project={project} index={i} />)}
 
-      <div class="journal" style="margin-top: 2rem;">
-        {
-          journal.map((project, i) => (
-            <ProjectCard project={project} index={worlds.length + i} />
-          ))
-        }
-      </div>
+      {
+        playbookProject && (
+          <ProjectCard project={playbookProject} index={worlds.length} />
+        )
+      }
+
+      {
+        journal.length > 0 && (
+          <div class="journal" style="margin-top: 2rem;">
+            {journal.map((project, i) => (
+              <ProjectCard project={project} index={worlds.length + 1 + i} />
+            ))}
+          </div>
+        )
+      }
     </div>
   </section>
 

@@ -2,6 +2,8 @@
 
 Original LJ RPG art and screens. Processed derivatives live in `public/img/lj/` (WebP/AVIF). Do not put originals heavier than 300 KB into `public/`.
 
+## LJ RPG
+
 | File | Use |
 |---|---|
 | `lj-rpg-hero.png` | LJ card hero + OG crop |
@@ -11,4 +13,19 @@ Original LJ RPG art and screens. Processed derivatives live in `public/img/lj/` 
 | `lj-rpg-phone-3-focus.png` | Phone frame 3 — `enabled: false` until replaced |
 | `lj-rpg-phone-4-chronicle.png` | Phone frame 4 — `enabled: false` until replaced |
 | `linter.png` | Mascot on dark LJ panel only |
-| `linter-512.png` | Small avatar / favicon variant |
+| `linter-512.png` | Small avatar |
+
+## Logo (`logo/`)
+
+Source pack from the owner. Copied into `public/` as needed. No true SVG was in the pack — `logo.svg`, `logo-on-dark.svg`, and dual-theme `favicon.svg` were reconstructed as clean flat SVGs from the raster N-key marks (cream `#F2EFE8`, cobalt `#1F3BFF`, no recolor/stretch/effects).
+
+| File | Use |
+|---|---|
+| `logo.svg` | Header mark (also `public/logo.svg`) |
+| `logo-on-dark.svg` | Dark surfaces |
+| `favicon.svg` | Dual-theme favicon |
+| `favicon.ico` | Legacy favicon |
+| `apple-touch-icon.png` | Apple touch |
+| `icon-192.png` / `icon-512.png` | Web manifest |
+| `logo-1024.png` | Master raster |
+| `logo-light-key-150.png`, `logo-dark-key-*.png`, `favicon-16/32/48.png` | Sources for SVG reconstruction |

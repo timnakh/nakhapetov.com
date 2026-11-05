@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="N">
+  <style>
+    .light { display: block; }
+    .dark { display: none; }
+    @media (prefers-color-scheme: dark) {
+      .light { display: none; }
+      .dark { display: block; }
+    }
+  </style>
+  <!-- Light theme: cream key, black N -->
+  <g class="light">
+    <rect width="128" height="128" rx="28" ry="28" fill="#F2EFE8"/>
+    <path fill="#111111" d="M20.4 24.1h14.6L64.6 78.2V24.1h14.6v68.7H64.6L35 38.7v54.1H20.4V24.1z"/>
+    <rect x="86.8" y="83.7" width="20.9" height="9.2" fill="#1F3BFF"/>
+  </g>
+  <!-- Dark theme: dark key, cream N -->
+  <g class="dark">
+    <rect width="128" height="128" rx="28" ry="28" fill="#1A1A1A"/>
+    <path fill="#F2EFE8" d="M20.4 24.1h14.6L64.6 78.2V24.1h14.6v68.7H64.6L35 38.7v54.1H20.4V24.1z"/>
+    <rect x="86.8" y="83.7" width="20.9" height="9.2" fill="#1F3BFF"/>
+  </g>
+</svg>
