@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/projects';
+---
+
+<BaseLayout
+  title="Tim Nakhapetov"
+  description="Indie developer. Small apps I shipped, and notes on how it was done — including the Indie Launch Playbook."
+  canonicalPath="/"
+  ogImage="/og-home.png"
+>
+  <section class="page-hero" data-hero-glow>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container">
+      <p class="eyebrow">Tim Nakhapetov</p>
+      <h1 class="hero-title" data-word-reveal>
+        I build small apps. Then I write down how it was done.
+      </h1>
+      <p class="lede">
+        Indie developer. Everything here is something I shipped, charged for, or learned the hard way.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#projects">See projects</a>
+        <a class="btn btn-ghost" href="/playbook">Read the free chapter</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects" aria-labelledby="projects-heading">
+    <div class="container">
+      <h2 class="section-title" id="projects-heading">Projects</h2>
+      <div class="projects-grid">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="about-heading">
+    <div class="container">
+      <h2 class="section-title" id="about-heading">About</h2>
+      <p class="lede">
+        I'm Tim. I build apps with AI tools and run them like small businesses. This site is where the projects live.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

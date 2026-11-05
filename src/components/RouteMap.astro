@@ -1,0 +1,34 @@
+---
+import { playbook } from '../data/playbook';
+---
+
+<section class="section" aria-labelledby="route-heading">
+  <div class="container">
+    <h2 class="section-title" id="route-heading">The route</h2>
+    <div class="route" data-route>
+      <div class="route-line" aria-hidden="true"><span></span></div>
+      <ul class="route-nodes">
+        {
+          playbook.routeNodes.map((node) => (
+            <li>
+              <button
+                type="button"
+                class="route-node"
+                data-route-node
+                data-step={node.id}
+                aria-expanded="false"
+                aria-describedby={`route-tip-${node.id}`}
+              >
+                <span class="route-dot" aria-hidden="true" />
+                <span class="route-copy">
+                  <span class="route-label">{node.title}</span>
+                  <span class="route-tip" id={`route-tip-${node.id}`}>{node.tip}</span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

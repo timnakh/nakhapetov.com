@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubscribeForm from '../../components/SubscribeForm.astro';
+import RouteMap from '../../components/RouteMap.astro';
+import { playbook } from '../../data/playbook';
+
+const showBuy = Boolean(playbook.checkoutUrl);
+---
+
+<BaseLayout
+  title="The Indie Launch Playbook"
+  description="From vibe-coded app to paid product: web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked."
+  canonicalPath="/playbook"
+  ogImage="/og-playbook.png"
+>
+  <section class="page-hero" data-hero-glow>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container">
+      <p class="eyebrow">The Indie Launch Playbook</p>
+      <h1 class="hero-title" data-word-reveal>From vibe-coded app to paid product</h1>
+      <p class="lede">
+        Web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.
+      </p>
+      <div style="margin-top: 2rem;">
+        <SubscribeForm id="subscribe-hero" />
+      </div>
+      {
+        showBuy && (
+          <div class="cta-row">
+            <a class="btn btn-ghost" href={playbook.checkoutUrl}>
+              Buy the full edition
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <RouteMap />
+
+  <section class="section" aria-labelledby="why-heading">
+    <div class="container prose-narrow">
+      <h2 class="section-title" id="why-heading">Why it exists</h2>
+      <p>
+        I took one app from working code to payments on the web and on Google Play. This playbook is that route in order, written after doing it, with the mistakes left in.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="inside-heading">
+    <div class="container">
+      <h2 class="section-title" id="inside-heading">What's inside</h2>
+      <div class="stats">
+        {
+          playbook.stats.map((stat) => (
+            <div class="stat">
+              <div class="stat-value">{stat.value}</div>
+              <div class="stat-label">{stat.label}</div>
+              {'note' in stat && stat.note ? <p class="stat-note">{stat.note}</p> : null}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ai-pack-heading">
+    <div class="container prose-narrow">
+      <h2 class="section-title" id="ai-pack-heading">The AI Pack</h2>
+      <p>
+        A Markdown file you drop into your AI coding tool: operating rules, 14 copy-and-paste briefs and a guide mode. Your keys, logins and payments stay with you.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="limits-heading">
+    <div class="container prose-narrow">
+      <h2 class="section-title" id="limits-heading">Honest limits</h2>
+      <p>
+        Platform rules change, so every claim is dated. The promotion chapter is a plan, not a proven result. The playbook does not cover Apple's App Store or tax advice.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-heading">
+    <div class="container" style="max-width: 40rem;">
+      <h2 class="section-title" id="faq-heading">FAQ</h2>
+      <div class="faq">
+        {
+          playbook.faq.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="again-heading">
+    <div class="container">
+      <h2 class="section-title" id="again-heading">Get the free chapter</h2>
+      <SubscribeForm id="subscribe-footer" />
+      {
+        showBuy && (
+          <div class="cta-row">
+            <a class="btn btn-ghost" href={playbook.checkoutUrl}>
+              Buy the full edition
+            </a>
+          </div>
+        )
+      }
+      <p class="edition">Edition: {playbook.edition}</p>
+    </div>
+  </section>
+</BaseLayout>

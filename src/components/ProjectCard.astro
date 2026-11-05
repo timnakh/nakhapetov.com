@@ -1,0 +1,68 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const hasBadgeFile = Boolean(project.playStore?.badgeSrc);
+---
+
+<article
+  class="project-card"
+  data-project={project.id}
+  data-interactive-card
+>
+  <div class="project-media" aria-hidden={!project.image}>
+    {
+      project.image ? (
+        <img src={project.image} alt={project.imageAlt ?? ''} loading="lazy" width="640" height="400" />
+      ) : (
+        <div class="sr-only">{project.imageAlt ?? `${project.name} placeholder`}</div>
+      )
+    }
+  </div>
+  <div>
+    <p class="project-status">{project.status}</p>
+    <h3>{project.name}</h3>
+    <p class="muted">{project.description}</p>
+  </div>
+  <div class="project-actions">
+    <a
+      class="btn btn-primary"
+      href={project.cta.href}
+      data-event="project_card_click"
+      data-project={project.id}
+      {...(project.cta.href.startsWith('http')
+        ? { rel: 'noopener noreferrer', target: '_blank' }
+        : {})}
+    >
+      {project.cta.label}
+    </a>
+    {
+      project.playStore && (
+        <a
+          class={hasBadgeFile ? 'play-badge' : 'play-badge-fallback'}
+          href={project.playStore.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          data-event="play_store_click"
+          data-source="hub"
+          aria-label="Get it on Google Play"
+        >
+          {hasBadgeFile ? (
+            <img
+              src={project.playStore.badgeSrc}
+              alt="Get it on Google Play"
+              height="40"
+              width="135"
+            />
+          ) : (
+            <span>Get it on Google Play</span>
+          )}
+        </a>
+      )
+    }
+  </div>
+</article>
