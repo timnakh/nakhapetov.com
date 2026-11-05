@@ -780,14 +780,45 @@ p:last-child {
 }
 
 .evidence-grid {
-  display: grid;
-  gap: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
+}
+
+.evidence-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.evidence-grid .proof-figure {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  width: min(78vw, 22rem);
 }
 
 @media (min-width: 768px) {
   .evidence-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
   }
+
+  .evidence-grid .proof-figure {
+    width: auto;
+  }
+}
+
+.evidence-footnote {
+  margin: 1rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 
 /* Route — хроника сверху full width, метро под ней */

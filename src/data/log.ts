@@ -16,7 +16,6 @@ export const milestones: Milestone[] = [
   {
     date: 'Oct 28 2026',
     event: 'Google Play organization account verified',
-    fig: 'duns-issued',
   },
   {
     date: 'Nov 2 2026',

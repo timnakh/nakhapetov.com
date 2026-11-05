@@ -2,6 +2,16 @@
 
 Original LJ RPG art and screens. Processed derivatives live in `public/img/lj/` (WebP/AVIF). Do not put originals heavier than 300 KB into `public/`.
 
+## Proof / Evidence (`proof/`)
+
+Owner screenshots for `/playbook#evidence`. Derivatives in `public/img/proof/` (WebP/AVIF + PNG ≤1600w).
+
+| File | Slot |
+|---|---|
+| `paddle-live.png` | Paddle dashboard, live payments |
+| `play-approved.png` | Play Console, review approved |
+| `play-subscriptions.png` | Play Console, subscriptions created |
+
 ## LJ RPG
 
 | File | Use |

@@ -17,21 +17,26 @@ const shots = resolveProofForPage(page);
       <div class="container">
         <p class="margin-note">Proof · screenshots</p>
         <h2 class="section-title" id={headingId}>
-          Evidence
+          What this looks like in practice
         </h2>
         <div class="evidence-grid">
           {shots.map((shot, i) => (
             <ProofFigure
               src={shot.src}
+              sources={shot.sources}
               alt={shot.alt}
               caption={shot.caption}
               figNumber={i + 1}
               missing={shot.missing}
+              width={shot.width}
+              height={shot.height}
             />
           ))}
         </div>
+        <p class="evidence-footnote">
+          Screenshots are lightly redacted for privacy.
+        </p>
       </div>
     </section>
   )
 }
-

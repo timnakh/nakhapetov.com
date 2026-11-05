@@ -12,6 +12,8 @@ export interface ProofShot {
   file: string;
   alt: string;
   caption: string;
+  width: number;
+  height: number;
   /** Page(s) where this shot may appear */
   page: 'playbook' | 'chapter-1' | Array<'playbook' | 'chapter-1'>;
 }
@@ -24,6 +26,8 @@ export const proofShots: ProofShot[] = [
     file: 'paddle-live',
     alt: 'Paddle dashboard showing live payments enabled',
     caption: 'Paddle dashboard, live payments enabled.',
+    width: 1600,
+    height: 890,
     page: 'playbook',
   },
   {
@@ -31,6 +35,8 @@ export const proofShots: ProofShot[] = [
     file: 'play-approved',
     alt: 'Google Play Console showing app review approved on Nov 2',
     caption: 'Play Console, Nov 2. Review approved.',
+    width: 1600,
+    height: 465,
     page: 'playbook',
   },
   {
@@ -38,40 +44,52 @@ export const proofShots: ProofShot[] = [
     file: 'play-subscriptions',
     alt: 'Google Play Console showing subscriptions created on Nov 4',
     caption: 'Play Console, Nov 4. Subscriptions created.',
+    width: 1600,
+    height: 457,
     page: 'playbook',
-  },
-  {
-    id: 'review-email',
-    file: 'review-email',
-    alt: 'App review email with personal data redacted',
-    caption: 'Review email, personal data redacted.',
-    page: 'playbook',
-  },
-  {
-    id: 'duns-issued',
-    file: 'duns-issued',
-    alt: 'D-U-N-S number confirmation with number partially redacted',
-    caption: 'D-U-N-S confirmation, number partially redacted.',
-    page: ['playbook', 'chapter-1'],
-  },
-  {
-    id: 'email-routing',
-    file: 'email-routing',
-    alt: 'Cloudflare Email Routing configured for hello@nakhapetov.com',
-    caption: 'Cloudflare Email Routing, address hello@.',
-    page: ['playbook', 'chapter-1'],
   },
 ];
 
+function proofDir(): string {
+  return path.join(process.cwd(), 'public/img/proof');
+}
+
 export function resolveProofSrc(file: string): string | null {
-  const dir = path.join(process.cwd(), 'public/img/proof');
   for (const ext of EXT_CANDIDATES) {
-    const candidate = path.join(dir, `${file}${ext}`);
+    const candidate = path.join(proofDir(), `${file}${ext}`);
     if (fs.existsSync(candidate)) {
       return `/img/proof/${file}${ext}`;
     }
   }
   return null;
+}
+
+export interface ProofSources {
+  avif?: string;
+  webp?: string;
+  fallback: string;
+}
+
+/** Prefer AVIF → WebP sources; raster (png/jpg) as <img> fallback. */
+export function resolveProofSources(file: string): ProofSources | null {
+  const dir = proofDir();
+  const rasterExts = ['.png', '.jpg', '.jpeg'] as const;
+  let fallback: string | null = null;
+  for (const ext of rasterExts) {
+    if (fs.existsSync(path.join(dir, `${file}${ext}`))) {
+      fallback = `/img/proof/${file}${ext}`;
+      break;
+    }
+  }
+  if (!fallback) fallback = resolveProofSrc(file);
+  if (!fallback) return null;
+  const avifPath = path.join(dir, `${file}.avif`);
+  const webpPath = path.join(dir, `${file}.webp`);
+  return {
+    avif: fs.existsSync(avifPath) ? `/img/proof/${file}.avif` : undefined,
+    webp: fs.existsSync(webpPath) ? `/img/proof/${file}.webp` : undefined,
+    fallback,
+  };
 }
 
 export function isDevOrPreview(): boolean {
@@ -85,8 +103,11 @@ export function pagesOf(shot: ProofShot): Array<'playbook' | 'chapter-1'> {
 export interface ResolvedProof {
   id: string;
   src: string | null;
+  sources: ProofSources | null;
   alt: string;
   caption: string;
+  width: number;
+  height: number;
   missing: boolean;
 }
 
@@ -98,13 +119,17 @@ export function resolveProofForPage(
   const out: ResolvedProof[] = [];
   for (const shot of proofShots) {
     if (!pagesOf(shot).includes(page)) continue;
-    const src = resolveProofSrc(shot.file);
+    const sources = resolveProofSources(shot.file);
+    const src = sources?.fallback ?? null;
     if (!src && !showMissing) continue;
     out.push({
       id: shot.id,
       src,
+      sources,
       alt: shot.alt,
       caption: shot.caption,
+      width: shot.width,
+      height: shot.height,
       missing: !src,
     });
   }
@@ -114,13 +139,17 @@ export function resolveProofForPage(
 export function resolveProofById(id: string): ResolvedProof | null {
   const shot = proofShots.find((s) => s.id === id);
   if (!shot) return null;
-  const src = resolveProofSrc(shot.file);
+  const sources = resolveProofSources(shot.file);
+  const src = sources?.fallback ?? null;
   if (!src && !isDevOrPreview()) return null;
   return {
     id: shot.id,
     src,
+    sources,
     alt: shot.alt,
     caption: shot.caption,
+    width: shot.width,
+    height: shot.height,
     missing: !src,
   };
 }
