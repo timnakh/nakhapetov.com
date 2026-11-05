@@ -14,6 +14,7 @@ interface Props {
   canonicalPath?: string;
   ogImage?: string;
   ogType?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   canonicalPath = Astro.url.pathname,
   ogImage = '/og-home.png',
   ogType = 'website',
+  jsonLd,
 } = Astro.props;
 
 const canonical = new URL(canonicalPath, site.url).toString();
@@ -53,6 +55,13 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogAbsolute} />
+
+    {
+      jsonLd && (
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+      )
+    }
+    <slot name="head" />
 
     {
       turnstileSiteKey && (
@@ -106,6 +115,7 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
           })(document, window.posthog || []);
           posthog.init(posthogKey, {
             api_host: 'https://eu.i.posthog.com',
+            ui_host: 'https://eu.posthog.com',
             persistence: 'memory',
             autocapture: false,
             capture_pageview: false,

@@ -6,10 +6,10 @@ export interface RouteStation {
   id: number;
   title: string;
   tip: string;
-  /** Подпись ловушки (на базе tip; без новых обещаний) */
+  /** Подпись шага / ловушки в панели */
   trap: string;
-  /** Ссылка на главу (пока глава 1 — единственный stub) */
-  chapterHref: string;
+  /** Ссылка на главу; null = только метка «In the full edition» */
+  chapterHref: string | null;
 }
 
 export const routeStations: RouteStation[] = [
@@ -17,49 +17,49 @@ export const routeStations: RouteStation[] = [
     id: 1,
     title: 'Identity',
     tip: 'entity, bank, D-U-N-S, business email',
-    trap: 'Trap #1 — entity, bank, D-U-N-S, business email',
+    trap: 'Step 1 — Name spelled differently in the D-U-N-S record and at the bank.',
     chapterHref: '/playbook/chapter-1',
   },
   {
     id: 2,
     title: 'Web sales',
     tip: 'provider review, sandbox, live',
-    trap: 'Trap #2 — provider review, sandbox, live',
-    chapterHref: '/playbook/chapter-1',
+    trap: 'Step 2 — provider review, sandbox, live',
+    chapterHref: null,
   },
   {
     id: 3,
     title: 'Play setup',
     tip: 'organization account, payments profile',
-    trap: 'Trap #3 — organization account, payments profile',
-    chapterHref: '/playbook/chapter-1',
+    trap: 'Step 3 — organization account, payments profile',
+    chapterHref: null,
   },
   {
     id: 4,
     title: 'App ready',
     tip: 'flavors, signed bundle, data safety',
-    trap: 'Trap #4 — flavors, signed bundle, data safety',
-    chapterHref: '/playbook/chapter-1',
+    trap: 'Step 4 — flavors, signed bundle, data safety',
+    chapterHref: null,
   },
   {
     id: 5,
     title: 'Release',
     tip: 'internal test, review, public listing',
-    trap: 'Trap #5 — internal test, review, public listing',
-    chapterHref: '/playbook/chapter-1',
+    trap: 'Step 5 — internal test, review, public listing',
+    chapterHref: null,
   },
   {
     id: 6,
     title: 'Billing',
     tip: 'subscriptions, notifications, 15% fee',
-    trap: 'Trap #6 — subscriptions, notifications, 15% fee',
-    chapterHref: '/playbook/chapter-1',
+    trap: 'Step 6 — subscriptions, notifications, 15% fee',
+    chapterHref: null,
   },
   {
     id: 7,
     title: 'Promotion',
     tip: 'plan, measure, iterate',
-    trap: 'Trap #7 — plan, measure, iterate',
-    chapterHref: '/playbook/chapter-1',
+    trap: 'Step 7 — plan, measure, iterate',
+    chapterHref: null,
   },
 ];

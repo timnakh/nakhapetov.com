@@ -1,34 +1,167 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubscribeForm from '../../components/SubscribeForm.astro';
+import TrapCallout from '../../components/TrapCallout.astro';
+import DoneWhen from '../../components/DoneWhen.astro';
+import CanonicalBlock from '../../components/CanonicalBlock.astro';
+import DiagramOneBlock from '../../components/DiagramOneBlock.astro';
+import FieldNote from '../../components/FieldNote.astro';
+import ProofFigure from '../../components/ProofFigure.astro';
+import { site } from '../../data/playbook';
+import { resolveProofById } from '../../data/proof';
+
+const chapterText = `Every step that comes later asks the same question: who are you? The payment provider asks it. Google Play asks it. Your bank asks it. And they all compare the answers with each other. So settle the answers once, before you apply anywhere, and then use them letter for letter.
+
+This chapter takes an afternoon. It saves days.
+
+What you will have at the end
+
+one written block with your legal identity, kept in a password manager;
+an issued D-U-N-S number for your business;
+a business bank account with a statement you can export;
+a business email on your own domain that receives and sends;
+a Google account that exists only for the business.
+
+Why this comes first
+
+Verification is mostly string comparison between documents. A mismatch does not fail loudly. It costs you days of waiting, then a vague rejection, then a support ticket. Almost every one of those mismatches is avoidable by deciding the details up front.
+
+Do
+
+1. Pick the selling entity. For Google Play and for a payment provider you will want a registered business, either a sole proprietorship or a company, not a private person. Your accountant decides the form. This playbook only needs the legal name and the address.
+
+2. Write one canonical block. Put these in one note: the exact legal name as registered, the trading name, the address, the business phone, the business email, the website. From now on you copy and paste from it. Never retype.
+
+Transliteration is the usual failure. The same name in Latin letters can legitimately be spelled two ways (a Cyrillic name rendered with "kh" or with "h", for example), and every system stores whichever version you typed. Choose one spelling and keep it everywhere.
+
+3. Get a business email on your own domain. You need a contact address and a support address. We forwarded incoming mail to an existing inbox and sent outgoing mail through a transactional email service. That is enough for platform reviews and costs almost nothing.
+
+4. Create a dedicated Google account for the business. Use it to register the Play developer account. The owner of a Play account cannot be changed later, so do not register under an account you might lose or want to hand over. Add your personal account as an admin afterwards.
+
+5. Request a D-U-N-S number. This is a nine-digit business identifier, and Google's organization sign-up checks it. At the time of writing it is free for this purpose. Submit the legal name, address, phone, legal form and activity exactly as in your canonical block, plus a registration document if they ask. Where the registry works through a regional partner, you fill in that partner's form instead of the main one.
+
+In our case the number was issued on 27 October 2026 and Google matched it on the 28th. Google's sign-up looks the number up while you register. If it does not match straight away, wait a day or two and retry.
+
+6. Open a business bank account in the currency you will be paid in (we used USD). Check that the account holder's name and address can be proven with a statement. Google and the payment provider both ask for one.
+
+7. Decide what the public will see. A Play listing for a business shows the developer name and contact email. Once you declare trader status it also shows an address and a phone number. Choose an address and a number you are comfortable publishing, preferably a dedicated business phone number, before you register. Changing them later means re-verifying across the bank, the payment provider and Google.
+
+Traps
+
+A name spelled differently in the D-U-N-S record and at the bank. Our Google payments profile was verified anyway. Treat that as luck, not a plan.
+Using your home address for the business without noticing that it will be published.
+Moving house later. An address change touches every account above. If you plan to move within a year, ask your accountant which address to register.
+
+Done when
+
+You have the canonical block in a password manager, an issued D-U-N-S number, a business bank account with a statement you can export, and a business email that both receives and sends.
+
+What comes next
+
+Chapter 2 is about taking payments on the web through a merchant of record: what the provider reviews on your site, how to write the policies they check, and how to build in the sandbox while you wait for approval. After that the route splits into two lanes, web sales and Google Play, and the two run side by side.
+
+The full edition covers all seven steps, a list of 17 traps with fixes, and an AI Pack: a file of ready-to-paste briefs for your coding assistant. Leave your email on the playbook page and you will hear when it is ready.
+
+Platform rules and screens change. Every claim in this playbook is dated, and if you notice something that no longer matches, tell us.`;
+
+const wordCount = chapterText.trim().split(/\s+/).length;
+const minutes = Math.max(1, Math.round(wordCount / 200));
+
+const toc = [
+  { id: 'what-you-will-have', label: 'What you will have at the end' },
+  { id: 'why-this-comes-first', label: 'Why this comes first' },
+  { id: 'do', label: 'Do' },
+  { id: 'traps', label: 'Traps' },
+  { id: 'done-when', label: 'Done when' },
+  { id: 'what-comes-next', label: 'What comes next' },
+];
+
+const emailRouting = resolveProofById('email-routing');
+const dunsIssued = resolveProofById('duns-issued');
+// Fig. 1 is the diagram; proof shots continue from 2 only when present.
+let nextFig = 2;
+const emailFig = emailRouting ? nextFig++ : null;
+const dunsFig = dunsIssued ? nextFig++ : null;
+
+// Official D-U-N-S for Google developers — verified HTTP 200.
+const dunsUrl = 'https://www.dnb.com/en-us/smb/duns/google-developers.html';
+// Google Play Console Help URLs for organization accounts returned 404 at build time; omit rather than invent.
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Chapter 1. Identity and entity',
+  author: { '@type': 'Person', name: 'Tim Nakhapetov' },
+  datePublished: '2026-11-01',
+  dateModified: '2026-11-05',
+  description:
+    'Settle your legal identity, D-U-N-S, bank account and business email before you apply anywhere.',
+  mainEntityOfPage: `${site.url}/playbook/chapter-1`,
+};
 ---
 
 <BaseLayout
   title="Chapter 1. Identity and entity · The Indie Launch Playbook"
   description="Settle your legal identity, D-U-N-S, bank account and business email before you apply anywhere. Free chapter from The Indie Launch Playbook."
   canonicalPath="/playbook/chapter-1"
-  ogImage="/og-playbook.png"
+  ogImage="/og-chapter-1.png"
+  ogType="article"
+  jsonLd={jsonLd}
 >
-  <article>
-    <section class="page-hero" style="padding-bottom: 2rem;">
-      <div class="container prose-narrow">
-        <p class="margin-note">Free chapter</p>
-        <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3.5rem); max-width: 18ch;">
-          Chapter 1. Identity and entity
-        </h1>
-        <p class="edition" style="margin-top: 0;">
-          <em>From The Indie Launch Playbook. Edition: November 2026.</em>
+  <div class="reading-progress" aria-hidden="true" data-reading-progress></div>
+
+  <article class="chapter" data-chapter>
+    <header class="chapter-header">
+      <div class="chapter-header-inner">
+        <p class="margin-note">Chapter 1 of 7</p>
+        <h1 class="hero-title chapter-h1">Identity and entity</h1>
+        <p class="chapter-meta">
+          Tim Nakhapetov · Edition November 2026 · Updated Nov 5 2026 · {minutes} min read
         </p>
       </div>
-    </section>
+    </header>
 
-    <section class="section chapter-body" style="padding-top: 0;">
-      <div class="container prose-narrow">
+    <div class="chapter-layout">
+      <nav class="chapter-toc" aria-label="In this chapter" data-chapter-toc>
+        <details class="toc-mobile">
+          <summary>In this chapter</summary>
+          <ol>
+            {
+              toc.map((item) => (
+                <li>
+                  <a href={`#${item.id}`} data-toc-link data-event="toc_click" data-section={item.id}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </details>
+        <div class="toc-desktop">
+          <p class="margin-note">In this chapter</p>
+          <ol>
+            {
+              toc.map((item) => (
+                <li>
+                  <a href={`#${item.id}`} data-toc-link data-event="toc_click" data-section={item.id}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </nav>
+
+      <div class="chapter-column chapter-body">
         <p>
           Every step that comes later asks the same question: who are you? The payment provider asks it. Google Play asks it. Your bank asks it. And they all compare the answers with each other. So settle the answers once, before you apply anywhere, and then use them letter for letter.
         </p>
         <p>This chapter takes an afternoon. It saves days.</p>
 
-        <h2>What you will have at the end</h2>
+        <h2 id="what-you-will-have">
+          <a class="anchor" href="#what-you-will-have">What you will have at the end</a>
+        </h2>
         <ul>
           <li>one written block with your legal identity, kept in a password manager;</li>
           <li>an issued D-U-N-S number for your business;</li>
@@ -37,33 +170,67 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <li>a Google account that exists only for the business.</li>
         </ul>
 
-        <h2>Why this comes first</h2>
+        <h2 id="why-this-comes-first">
+          <a class="anchor" href="#why-this-comes-first">Why this comes first</a>
+        </h2>
         <p>
           Verification is mostly string comparison between documents. A mismatch does not fail loudly. It costs you days of waiting, then a vague rejection, then a support ticket. Almost every one of those mismatches is avoidable by deciding the details up front.
         </p>
 
-        <h2>Do</h2>
+        <h2 id="do"><a class="anchor" href="#do">Do</a></h2>
         <p>
           <strong>1. Pick the selling entity.</strong> For Google Play and for a payment provider you will want a registered business, either a sole proprietorship or a company, not a private person. Your accountant decides the form. This playbook only needs the legal name and the address.
         </p>
         <p>
           <strong>2. Write one canonical block.</strong> Put these in one note: the exact legal name as registered, the trading name, the address, the business phone, the business email, the website. From now on you copy and paste from it. Never retype.
         </p>
+
+        <CanonicalBlock />
+        <DiagramOneBlock />
+
         <p>
           Transliteration is the usual failure. The same name in Latin letters can legitimately be spelled two ways (a Cyrillic name rendered with "kh" or with "h", for example), and every system stores whichever version you typed. Choose one spelling and keep it everywhere.
         </p>
         <p>
           <strong>3. Get a business email on your own domain.</strong> You need a contact address and a support address. We forwarded incoming mail to an existing inbox and sent outgoing mail through a transactional email service. That is enough for platform reviews and costs almost nothing.
         </p>
+        {
+          emailRouting && emailFig && (
+            <ProofFigure
+              src={emailRouting.src}
+              alt={emailRouting.alt}
+              caption={emailRouting.caption}
+              figNumber={emailFig}
+              missing={emailRouting.missing}
+            />
+          )
+        }
         <p>
           <strong>4. Create a dedicated Google account for the business.</strong> Use it to register the Play developer account. The owner of a Play account cannot be changed later, so do not register under an account you might lose or want to hand over. Add your personal account as an admin afterwards.
         </p>
         <p>
-          <strong>5. Request a D-U-N-S number.</strong> This is a nine-digit business identifier, and Google's organization sign-up checks it. At the time of writing it is free for this purpose. Submit the legal name, address, phone, legal form and activity exactly as in your canonical block, plus a registration document if they ask. Where the registry works through a regional partner, you fill in that partner's form instead of the main one.
+          <strong>5. Request a D-U-N-S number.</strong> This is a nine-digit business identifier, and Google's organization sign-up checks it. At the time of writing it is free for this purpose. Submit the legal name, address, phone, legal form and activity exactly as in your canonical block, plus a registration document if they ask. Where the registry works through a regional partner, you fill in that partner's form instead of the main one. Request one free via{' '}
+          <a href={dunsUrl} rel="noopener noreferrer" target="_blank">Dun &amp; Bradstreet for Google developers</a>.
         </p>
-        <p>
-          In our case the number was issued on 27 October 2026 and Google matched it on the 28th. Google's sign-up looks the number up while you register. If it does not match straight away, wait a day or two and retry.
-        </p>
+
+        <div class="chapter-with-margin">
+          <FieldNote>
+            <p>
+              In our case the number was issued on 27 October 2026 and Google matched it on the 28th. Google's sign-up looks the number up while you register. If it does not match straight away, wait a day or two and retry.
+            </p>
+          </FieldNote>
+        </div>
+        {
+          dunsIssued && dunsFig && (
+            <ProofFigure
+              src={dunsIssued.src}
+              alt={dunsIssued.alt}
+              caption={dunsIssued.caption}
+              figNumber={dunsFig}
+              missing={dunsIssued.missing}
+            />
+          )
+        }
         <p>
           <strong>6. Open a business bank account</strong> in the currency you will be paid in (we used USD). Check that the account holder's name and address can be proven with a statement. Google and the payment provider both ask for one.
         </p>
@@ -71,25 +238,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <strong>7. Decide what the public will see.</strong> A Play listing for a business shows the developer name and contact email. Once you declare trader status it also shows an address and a phone number. Choose an address and a number you are comfortable publishing, preferably a dedicated business phone number, before you register. Changing them later means re-verifying across the bank, the payment provider and Google.
         </p>
 
-        <h2>Traps</h2>
-        <ul>
-          <li>
-            <strong>A name spelled differently in the D-U-N-S record and at the bank.</strong> Our Google payments profile was verified anyway. Treat that as luck, not a plan.
-          </li>
-          <li>
-            <strong>Using your home address for the business without noticing that it will be published.</strong>
-          </li>
-          <li>
-            <strong>Moving house later.</strong> An address change touches every account above. If you plan to move within a year, ask your accountant which address to register.
-          </li>
-        </ul>
+        <h2 id="traps"><a class="anchor" href="#traps">Traps</a></h2>
+        <TrapCallout title="A name spelled differently in the D-U-N-S record and at the bank.">
+          Our Google payments profile was verified anyway. Treat that as luck, not a plan.
+        </TrapCallout>
+        <TrapCallout title="Using your home address for the business without noticing that it will be published." />
+        <TrapCallout title="Moving house later.">
+          An address change touches every account above. If you plan to move within a year, ask your accountant which address to register.
+        </TrapCallout>
 
-        <h2>Done when</h2>
-        <p>
-          You have the canonical block in a password manager, an issued D-U-N-S number, a business bank account with a statement you can export, and a business email that both receives and sends.
-        </p>
+        <h2 id="done-when"><a class="anchor" href="#done-when">Done when</a></h2>
+        <DoneWhen
+          items={[
+            'Canonical block saved in a password manager',
+            'Issued D-U-N-S number',
+            'Business bank account with an exportable statement',
+            'Business email that receives and sends',
+          ]}
+        />
 
-        <h2>What comes next</h2>
+        <h2 id="what-comes-next">
+          <a class="anchor" href="#what-comes-next">What comes next</a>
+        </h2>
         <p>
           Chapter 2 is about taking payments on the web through a merchant of record: what the provider reviews on your site, how to write the policies they check, and how to build in the sandbox while you wait for approval. After that the route splits into two lanes, web sales and Google Play, and the two run side by side.
         </p>
@@ -102,10 +272,24 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           >
         </p>
 
-        <div class="cta-row">
-          <a class="btn btn-ghost" href="/playbook">Back to the playbook</a>
+        <nav class="chapter-nav" aria-label="Chapter navigation">
+          <a class="text-link" href="/playbook">← Back to the playbook</a>
+          <span class="edition-mark">Next: Chapter 2. Web payments · In the full edition</span>
+        </nav>
+
+        <div class="chapter-subscribe">
+          <h2 class="section-title" style="font-size: 1.5rem;">Stay on the list</h2>
+          <SubscribeForm
+            id="subscribe-chapter"
+            hint="Get the full edition when it is ready. One email, unsubscribe any time."
+            eventName="chapter_cta_submit"
+          />
+          <p class="edition">
+            Something outdated? Tell me:{' '}
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
         </div>
       </div>
-    </section>
+    </div>
   </article>
 </BaseLayout>

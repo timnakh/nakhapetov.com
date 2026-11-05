@@ -1,0 +1,32 @@
+---
+const fields = [
+  'Legal name',
+  'Trading name',
+  'Address',
+  'Phone',
+  'Email',
+  'Website',
+  'D-U-N-S',
+  'Bank',
+  'Business Google account',
+];
+
+const plain = fields.map((f) => `${f}:`).join('\n');
+---
+
+<div class="canonical-block" data-canonical-block>
+  <div class="canonical-head">
+    <p class="margin-note" style="margin:0;">Canonical block</p>
+    <button
+      type="button"
+      class="btn btn-ghost"
+      data-copy-template
+      data-copy-text={plain}
+      data-event="template_copy"
+    >
+      Copy template
+    </button>
+  </div>
+  <pre class="canonical-pre" aria-label="Canonical identity template">{plain}</pre>
+  <p class="copy-status" data-copy-status hidden>Copied.</p>
+</div>

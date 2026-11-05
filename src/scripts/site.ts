@@ -12,7 +12,7 @@ type RouteStation = {
   title: string;
   tip: string;
   trap: string;
-  chapterHref: string;
+  chapterHref: string | null;
 };
 
 declare global {
@@ -59,6 +59,7 @@ function initRoute() {
   const trapEl = route.querySelector<HTMLElement>('[data-route-trap]');
   const tipEl = route.querySelector<HTMLElement>('[data-route-tip]');
   const linkEl = route.querySelector<HTMLAnchorElement>('[data-route-link]');
+  const fullEl = route.querySelector<HTMLElement>('[data-route-full]');
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -83,7 +84,7 @@ function initRoute() {
       node.classList.toggle('is-active', open);
     });
 
-    if (!panel || !trapEl || !tipEl || !linkEl) return;
+    if (!panel || !trapEl || !tipEl) return;
     const station = stations.find((s) => s.id === step);
     if (!station) {
       panel.hidden = true;
@@ -91,7 +92,16 @@ function initRoute() {
     }
     trapEl.textContent = station.trap;
     tipEl.textContent = station.tip;
-    linkEl.href = station.chapterHref;
+    if (linkEl && fullEl) {
+      if (station.chapterHref) {
+        linkEl.href = station.chapterHref;
+        linkEl.hidden = false;
+        fullEl.hidden = true;
+      } else {
+        linkEl.hidden = true;
+        fullEl.hidden = false;
+      }
+    }
     panel.hidden = false;
   }
 
@@ -108,7 +118,6 @@ function initRoute() {
     };
 
     btn.addEventListener('click', (e) => {
-      // Не перехватываем клик по ссылке внутри мобильной детали
       if ((e.target as HTMLElement).closest('a')) return;
       activate();
     });
@@ -121,6 +130,96 @@ function initRoute() {
   });
 }
 
+function initLightbox() {
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  if (!dialog) return;
+  const img = dialog.querySelector<HTMLImageElement>('[data-lightbox-img]');
+
+  document.querySelectorAll<HTMLElement>('[data-lightbox-open]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const src = btn.dataset.lightboxSrc;
+      const alt = btn.dataset.lightboxAlt ?? '';
+      if (!src || !img) return;
+      img.src = src;
+      img.alt = alt;
+      dialog.showModal();
+    });
+  });
+
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+}
+
+function initCopyTemplate() {
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-template]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copyText ?? '';
+      try {
+        await navigator.clipboard.writeText(text);
+        capture('template_copy');
+        const status = btn
+          .closest('[data-canonical-block]')
+          ?.querySelector<HTMLElement>('[data-copy-status]');
+        if (status) {
+          status.hidden = false;
+          setTimeout(() => {
+            status.hidden = true;
+          }, 2000);
+        }
+      } catch {
+        // Clipboard may be unavailable; leave silent.
+      }
+    });
+  });
+}
+
+function initChapter() {
+  const chapter = document.querySelector<HTMLElement>('[data-chapter]');
+  if (!chapter) return;
+
+  capture('chapter_view', { path: location.pathname });
+
+  const progress = document.querySelector<HTMLElement>('[data-reading-progress]');
+  let hit50 = false;
+  let hit90 = false;
+
+  const onScroll = () => {
+    const rect = chapter.getBoundingClientRect();
+    const total = chapter.offsetHeight - window.innerHeight;
+    const scrolled = Math.min(1, Math.max(0, -rect.top / Math.max(total, 1)));
+    if (progress && !reducedMotion) {
+      progress.style.transform = `scaleX(${scrolled})`;
+    }
+    if (!hit50 && scrolled >= 0.5) {
+      hit50 = true;
+      capture('chapter_scroll_50');
+    }
+    if (!hit90 && scrolled >= 0.9) {
+      hit90 = true;
+      capture('chapter_scroll_90');
+    }
+
+    // Highlight TOC
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    let current = '';
+    links.forEach((link) => {
+      const id = link.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.getBoundingClientRect().top <= 120) current = id;
+    });
+    links.forEach((link) => {
+      const id = link.getAttribute('href')?.slice(1);
+      link.classList.toggle('is-active', id === current);
+    });
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
 function initAnalyticsClicks() {
   document.addEventListener('click', (e) => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('[data-event]');
@@ -128,11 +227,16 @@ function initAnalyticsClicks() {
     const props: Record<string, unknown> = {};
     if (target.dataset.project) props.project = target.dataset.project;
     if (target.dataset.source) props.source = target.dataset.source;
+    if (target.dataset.section) props.section = target.dataset.section;
     capture(target.dataset.event, props);
   });
 
   document.querySelectorAll('form[data-analytics="subscribe"]').forEach((form) => {
-    form.addEventListener('submit', () => capture('subscribe_submit'));
+    form.addEventListener('submit', () => {
+      const eventName =
+        (form as HTMLFormElement).dataset.subscribeEvent || 'subscribe_submit';
+      capture(eventName);
+    });
   });
 }
 
@@ -153,5 +257,8 @@ function waitForPostHogAndView() {
 splitHeroWords();
 initJournalRows();
 initRoute();
+initLightbox();
+initCopyTemplate();
+initChapter();
 initAnalyticsClicks();
 waitForPostHogAndView();
