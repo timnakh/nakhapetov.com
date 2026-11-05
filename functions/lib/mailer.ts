@@ -109,7 +109,7 @@ export function createMailer(env: Env): Mailer {
 export function unsubscribeFooter(email: string, siteUrl: string): { html: string; text: string } {
   const unsub = `${siteUrl}/privacy#unsubscribe`;
   return {
-    html: `<p style="color:#4A463E;font-size:13px;margin-top:32px;">You received this because you asked for the Indie Launch Playbook.<br/><a href="${unsub}">Unsubscribe</a> · <a href="mailto:hello@nakhapetov.com">hello@nakhapetov.com</a></p>`,
+    html: `<p style="color:#555555;font-size:13px;margin-top:32px;line-height:1.5;">You received this because you asked for the Indie Launch Playbook.<br/><a href="${unsub}" style="color:#111111;text-decoration:underline;">Unsubscribe</a> · <a href="mailto:hello@nakhapetov.com" style="color:#111111;text-decoration:underline;">hello@nakhapetov.com</a></p>`,
     text: `\n\nUnsubscribe: ${unsub}\nContact: hello@nakhapetov.com\n(Requested for: ${email})`,
   };
 }

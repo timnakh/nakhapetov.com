@@ -1,7 +1,6 @@
 /**
  * Кадры карточки Life Journey RPG.
  * Менять порядок и список здесь — без правок вёрстки.
- * Кадры 3–4: enabled: false, пока владелец не заменит файлы.
  */
 export interface LjHero {
   id: string;
@@ -65,7 +64,7 @@ export const ljPhones: LjPhoneFrame[] = [
     width: 540,
     height: 1200,
     alt: 'Life Journey RPG Focus Mode with a countdown timer',
-    enabled: false,
+    enabled: true,
   },
   {
     id: 'chronicle',
@@ -73,7 +72,7 @@ export const ljPhones: LjPhoneFrame[] = [
     width: 540,
     height: 1200,
     alt: 'Life Journey RPG Chronicle diary tab',
-    enabled: false,
+    enabled: true,
   },
 ];
 

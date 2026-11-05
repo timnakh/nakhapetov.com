@@ -49,18 +49,17 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   await mailer.send({
     to: verified.email,
-    subject: 'Chapter 1: Identity and entity',
+    subject: 'Your free chapter: Identity and entity',
     replyTo: 'hello@nakhapetov.com',
     html: `
-      <div style="font-family:Georgia,serif;background:#F2EFE8;color:#111111;padding:32px;max-width:560px;">
-        <h1 style="font-size:22px;margin:0 0 12px;font-weight:400;">Chapter 1: Identity and entity</h1>
-        <p style="color:#4A463E;line-height:1.55;">Thanks for confirming. Your free chapter is ready.</p>
-        <p style="margin:28px 0;"><a href="${chapterUrl}" style="display:inline-block;background:#1F3BFF;color:#ffffff;padding:12px 20px;text-decoration:none;">Read the free chapter</a></p>
-        <p style="color:#4A463E;line-height:1.55;">Reply to this email if something looks outdated.</p>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111111;max-width:560px;line-height:1.55;font-size:16px;">
+        <p style="margin:0 0 1em;">Thanks for confirming. Your free chapter of the Indie Launch Playbook is ready — <em>Identity and entity</em>, the first step of the route.</p>
+        <p style="margin:0 0 1em;">Read it here: <a href="${chapterUrl}" style="color:#111111;text-decoration:underline;">${chapterUrl}</a><br/><br/>I'll write again when the full edition ships. Reply anytime if something looks outdated.</p>
+        <p style="margin:0 0 1em;">Tim</p>
         ${footer.html}
       </div>
     `,
-    text: `Chapter 1: Identity and entity\n\nRead it here: ${chapterUrl}\n\nReply to this email if something looks outdated.${footer.text}`,
+    text: `Your free chapter: Identity and entity\n\nThanks for confirming. Your free chapter of the Indie Launch Playbook is ready — Identity and entity, the first step of the route.\n\nRead it here: ${chapterUrl}\n\nI'll write again when the full edition ships. Reply anytime if something looks outdated.\n\nTim${footer.text}`,
   });
 
   if (already) {
