@@ -7,18 +7,7 @@ import { playbook } from '../../data/playbook';
 
 const showBuy = Boolean(playbook.checkoutUrl);
 
-const errorMessages: Record<string, string> = {
-  turnstile: 'Please confirm you are human and try again.',
-  email: 'That email address does not look right. Please check and try again.',
-  rate_limit: 'Too many attempts. Please wait a few minutes and try again.',
-  token: 'That confirmation link is no longer valid. Enter your email again to get a new one.',
-  config: 'Something went wrong on our side. Please try again later.',
-  invalid: 'Something went wrong. Please try again.',
-  already: 'You are already on the list. Check your inbox for the chapter link.',
-};
-
-const errorCode = Astro.url.searchParams.get('error') ?? '';
-const errorMessage = errorMessages[errorCode] ?? '';
+// ?error= is filled at request time by functions/_middleware.ts (static build has no searchParams).
 ---
 
 <BaseLayout
@@ -36,13 +25,7 @@ const errorMessage = errorMessages[errorCode] ?? '';
       <p class="lede">
         Web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.
       </p>
-      {
-        errorMessage && (
-          <p class="form-status is-error" role="alert">
-            {errorMessage}
-          </p>
-        )
-      }
+      <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
       <div style="margin-top: 2rem;">
         <SubscribeForm id="subscribe-hero" />
       </div>
@@ -125,13 +108,7 @@ const errorMessage = errorMessages[errorCode] ?? '';
   <section class="section" aria-labelledby="again-heading">
     <div class="container">
       <h2 class="section-title" id="again-heading">Get the free chapter</h2>
-      {
-        errorMessage && (
-          <p class="form-status is-error" role="alert">
-            {errorMessage}
-          </p>
-        )
-      }
+      <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
       <SubscribeForm id="subscribe-footer" />
       {
         showBuy && (
