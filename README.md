@@ -57,6 +57,7 @@ npx wrangler pages dev dist
 | `PUBLIC_TURNSTILE_SITE_KEY` | **Build** + Production (+ Preview) | То же публичное значение — Astro читает его **только на сборке** в `data-sitekey` / `data-turnstile-site-key` |
 | `MAIL_PROVIDER_API_KEY` | Production (secret) | API-ключ Resend |
 | `MAIL_LIST_ID` | Production | ID Audience (списка) в Resend |
+| `MAIL_INTEREST_LIST_ID` | Production (опционально) | Отдельный Resend Audience / segment для early-access demand; без него `/api/interest` пишет в лог и не падает |
 | `MAIL_FROM` | Production (опционально) | Например `Playbook <hello@nakhapetov.com>` |
 | `MAIL_DRY_RUN` | Production (опционально) | `1` — не слать письма, писать в лог |
 | `TOKEN_SECRET` | Production (secret) | Секрет HMAC для ссылок подтверждения (48 ч) |
@@ -91,10 +92,10 @@ Site key — публичный (его видно в HTML). Secret key нико
 ## Структура
 
 ```
-src/pages/           # /, /playbook, thanks, chapter-1, /privacy
+src/pages/           # /, /playbook, thanks, chapter-1, early-access, /privacy
 src/data/projects.ts # карточки проектов (добавление = новая запись)
 src/data/playbook.ts # checkoutUrl, route, FAQ
-functions/api/       # subscribe, confirm
+functions/api/       # subscribe, confirm, interest
 functions/lib/       # mailer, token, turnstile, rate-limit
 public/_headers      # CSP и security headers
 ```

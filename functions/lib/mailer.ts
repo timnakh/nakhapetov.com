@@ -16,6 +16,10 @@ export interface MailMessage {
 export interface MailContact {
   email: string;
   audienceId: string;
+  /** Optional Resend contact fields (first/last name). Custom props go in `properties`. */
+  firstName?: string;
+  lastName?: string;
+  properties?: Record<string, string>;
 }
 
 export interface Mailer {
@@ -49,7 +53,13 @@ export function createMailer(env: Env): Mailer {
         return { id: `dry-${Date.now()}`, dryRun: true };
       },
       async addContact(contact) {
-        console.log('[mailer:dry-run] addContact', contact);
+        console.log('[mailer:dry-run] addContact', {
+          email: contact.email,
+          audienceId: contact.audienceId,
+          firstName: contact.firstName,
+          lastName: contact.lastName,
+          properties: contact.properties,
+        });
         return { id: `dry-contact-${Date.now()}`, dryRun: true };
       },
     };
@@ -81,6 +91,17 @@ export function createMailer(env: Env): Mailer {
       return { id: data.id };
     },
     async addContact(contact) {
+      const payload: Record<string, unknown> = {
+        email: contact.email,
+        unsubscribed: false,
+      };
+      if (contact.firstName) payload.first_name = contact.firstName;
+      if (contact.lastName) payload.last_name = contact.lastName;
+      // Resend custom contact properties (audience must define keys; ignored if unsupported).
+      if (contact.properties && Object.keys(contact.properties).length) {
+        payload.properties = contact.properties;
+      }
+
       const res = await fetch(
         `https://api.resend.com/audiences/${encodeURIComponent(contact.audienceId)}/contacts`,
         {
@@ -89,10 +110,7 @@ export function createMailer(env: Env): Mailer {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            email: contact.email,
-            unsubscribed: false,
-          }),
+          body: JSON.stringify(payload),
         },
       );
       // 409 — контакт уже есть, считаем успехом

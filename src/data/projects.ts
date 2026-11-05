@@ -50,7 +50,7 @@ export const projects: Project[] = [
   {
     id: 'playbook',
     name: 'The Indie Launch Playbook',
-    status: 'Free chapter · Full edition in preparation',
+    status: 'Free chapter · Checking demand',
     year: '2026',
     description:
       'From vibe-coded app to paid product: web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.',

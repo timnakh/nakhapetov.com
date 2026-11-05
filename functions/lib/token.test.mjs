@@ -1,8 +1,15 @@
 /**
- * Node smoke test for confirm token round-trip (no secrets logged).
+ * Node smoke test for confirm / interest token round-trip (no secrets logged).
  * Run: node functions/lib/token.test.mjs
  */
-import { signConfirmToken, verifyConfirmToken } from './token.ts';
+import {
+  CONFIRM_TOKEN_TTL_MS,
+  INTEREST_TOKEN_TTL_MS,
+  signConfirmToken,
+  signInterestToken,
+  verifyConfirmToken,
+  verifyInterestToken,
+} from './token.ts';
 
 const secret = 'unit-test-secret';
 const emails = ['you@example.com', 'a@b.co', 'tim@nakhapetov.com', 'user+tag@mail.example.org'];
@@ -31,10 +38,24 @@ for (const email of emails) {
     failed++;
     continue;
   }
-  // Expired
-  const old = await signConfirmToken(email, secret, Date.now() - 49 * 60 * 60 * 1000);
+  // Confirm expired after 48h
+  const old = await signConfirmToken(email, secret, Date.now() - CONFIRM_TOKEN_TTL_MS - 60_000);
   if (await verifyConfirmToken(old, secret)) {
     console.error('FAIL expiry', email);
+    failed++;
+    continue;
+  }
+  // Interest accepts tokens within 90d (including a 2-day-old confirm-shaped token)
+  const twoDays = await signInterestToken(email, secret, Date.now() - 2 * 24 * 60 * 60 * 1000);
+  const interestOk = await verifyInterestToken(twoDays, secret);
+  if (!interestOk || interestOk.email !== email.toLowerCase()) {
+    console.error('FAIL interest', email);
+    failed++;
+    continue;
+  }
+  const tooOld = await signInterestToken(email, secret, Date.now() - INTEREST_TOKEN_TTL_MS - 60_000);
+  if (await verifyInterestToken(tooOld, secret)) {
+    console.error('FAIL interest expiry', email);
     failed++;
     continue;
   }

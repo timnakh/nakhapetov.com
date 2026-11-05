@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubscribeForm from '../../components/SubscribeForm.astro';
+import { playbook } from '../../data/playbook';
+
+// Static page: token `?t=` is read client-side (Astro build has no request searchParams).
+const priceOptions = [
+  { value: 'under_20', label: 'Under $20' },
+  { value: '20_40', label: '$20–40' },
+  { value: '40_80', label: '$40–80' },
+  { value: '80_plus', label: '$80+' },
+  { value: 'not_sure', label: 'Not sure yet' },
+];
+---
+
+<BaseLayout
+  title="Early access"
+  description="Tell me what feels like a fair price for the Indie Launch Playbook. No purchase yet — demand check only."
+  canonicalPath="/playbook/early-access"
+  ogImage="/og-playbook.png"
+  noindex={true}
+>
+  <section class="page-hero">
+    <div class="container prose-narrow">
+      <p class="margin-note">Demand check · No purchase</p>
+      <h1 class="hero-title" style="max-width: 14ch;">Early access to the full playbook</h1>
+      <p class="lede">
+        The full playbook and the AI Pack are written. I am checking demand before I open sales.
+      </p>
+      <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="inside-heading" style="padding-top: 0;">
+    <div class="container">
+      <h2 class="section-title" id="inside-heading">What's inside</h2>
+      <div class="stats">
+        {
+          playbook.stats.map((stat) => (
+            <div class="stat">
+              <div class="stat-value">{stat.value}</div>
+              <div class="stat-label">{stat.label}</div>
+              {'note' in stat && stat.note ? <p class="stat-note">{stat.note}</p> : null}
+            </div>
+          ))
+        }
+      </div>
+      <p class="section-lede" style="margin-top: 1.5rem; max-width: 36rem;">
+        Seven steps in order, 17 traps with fixes, and an AI Pack: ready-to-paste briefs for your coding assistant. No price listed here — this page only asks what feels fair.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="interest-heading">
+    <div class="container prose-narrow">
+      <h2 class="section-title" id="interest-heading">Count me in</h2>
+
+      <div data-interest-with-token hidden>
+        <form
+          id="interest-form"
+          class="interest-form"
+          method="POST"
+          action="/api/interest"
+          data-analytics="interest"
+        >
+          <input type="hidden" name="t" value="" data-interest-token />
+          <fieldset class="interest-prices">
+            <legend>What feels like a fair price?</legend>
+            {
+              priceOptions.map((opt) => (
+                <label class="interest-price-option">
+                  <input type="radio" name="price_choice" value={opt.value} required />
+                  <span>{opt.label}</span>
+                </label>
+              ))
+            }
+          </fieldset>
+          <label class="interest-comment-label" for="interest-comment">
+            Anything else? <span class="optional">(optional)</span>
+          </label>
+          <textarea
+            id="interest-comment"
+            name="comment"
+            maxlength="500"
+            rows="4"
+            placeholder="Optional note — up to 500 characters"
+          ></textarea>
+          <p class="hint" data-interest-count>0 / 500</p>
+          <div class="hp" aria-hidden="true">
+            <label for="interest-company">Company</label>
+            <input
+              id="interest-company"
+              type="text"
+              name="company"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+          <button class="btn btn-primary" type="submit">Count me in</button>
+          <p class="hint">No payment. This only tells me there is demand.</p>
+        </form>
+      </div>
+
+      <div data-interest-subscribe>
+        <p class="lede" style="font-size: 1.05rem; margin-bottom: 1rem;">
+          Leave your email first. After you confirm, the welcome message includes your early-access link.
+        </p>
+        <SubscribeForm
+          id="subscribe-early-access"
+          buttonLabel="Get the free chapter"
+          hint="One email with the chapter. After confirm you can tell me what feels fair. Unsubscribe any time."
+          eventName="subscribe_submit"
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var token = (params.get('t') || '').trim();
+    var withToken = document.querySelector('[data-interest-with-token]');
+    var subscribe = document.querySelector('[data-interest-subscribe]');
+    var tokenInput = document.querySelector('[data-interest-token]');
+    var comment = document.getElementById('interest-comment');
+    var count = document.querySelector('[data-interest-count]');
+
+    if (token && withToken && subscribe && tokenInput) {
+      tokenInput.value = token;
+      withToken.hidden = false;
+      subscribe.hidden = true;
+    }
+
+    if (comment && count) {
+      var sync = function () {
+        count.textContent = String(comment.value.length) + ' / 500';
+      };
+      comment.addEventListener('input', sync);
+      sync();
+    }
+  })();
+</script>
