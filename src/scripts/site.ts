@@ -54,60 +54,42 @@ function initRoute() {
   const route = document.querySelector<HTMLElement>('[data-route]');
   if (!route) return;
 
-  const stations = window.__ROUTE_STATIONS__ ?? [];
-  const panel = route.querySelector<HTMLElement>('[data-route-panel]');
-  const trapEl = route.querySelector<HTMLElement>('[data-route-trap]');
-  const tipEl = route.querySelector<HTMLElement>('[data-route-tip]');
-  const linkEl = route.querySelector<HTMLAnchorElement>('[data-route-link]');
-  const fullEl = route.querySelector<HTMLElement>('[data-route-full]');
+  const stops = Array.from(route.querySelectorAll<HTMLElement>('[data-route-node]'));
 
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          route.classList.add('is-drawn');
-          io.disconnect();
+  if (!reducedMotion) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            route.classList.add('is-drawn');
+            io.disconnect();
+          }
         }
-      }
-    },
-    { threshold: 0.35 },
-  );
-  io.observe(route);
-
-  const nodes = route.querySelectorAll<HTMLElement>('[data-route-node]');
-
-  function setOpen(step: number | null) {
-    nodes.forEach((node) => {
-      const id = Number(node.dataset.step);
-      const open = step !== null && id === step;
-      node.setAttribute('aria-expanded', open ? 'true' : 'false');
-      node.classList.toggle('is-active', open);
-    });
-
-    if (!panel || !trapEl || !tipEl) return;
-    const station = stations.find((s) => s.id === step);
-    if (!station) {
-      panel.hidden = true;
-      return;
-    }
-    trapEl.textContent = station.trap;
-    tipEl.textContent = station.tip;
-    if (linkEl && fullEl) {
-      if (station.chapterHref) {
-        linkEl.href = station.chapterHref;
-        linkEl.hidden = false;
-        fullEl.hidden = true;
-      } else {
-        linkEl.hidden = true;
-        fullEl.hidden = false;
-      }
-    }
-    panel.hidden = false;
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(route);
+  } else {
+    route.classList.add('is-drawn');
   }
 
-  nodes.forEach((btn) => {
-    const activate = () => {
-      const step = Number(btn.dataset.step);
+  function setOpen(step: number | null) {
+    stops.forEach((stop) => {
+      const id = Number(stop.dataset.step);
+      const open = step !== null && id === step;
+      const btn = stop.querySelector<HTMLButtonElement>('[data-route-toggle]');
+      const card = stop.querySelector<HTMLElement>('[data-route-card]');
+      btn?.setAttribute('aria-expanded', open ? 'true' : 'false');
+      stop.classList.toggle('is-open', open);
+      if (card) card.hidden = !open;
+    });
+  }
+
+  stops.forEach((stop) => {
+    const btn = stop.querySelector<HTMLButtonElement>('[data-route-toggle]');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const step = Number(stop.dataset.step);
       const open = btn.getAttribute('aria-expanded') === 'true';
       if (open) {
         setOpen(null);
@@ -115,18 +97,11 @@ function initRoute() {
       }
       setOpen(step);
       capture('route_node_open', { step });
-    };
+    });
+  });
 
-    btn.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).closest('a')) return;
-      activate();
-    });
-    btn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        activate();
-      }
-    });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(null);
   });
 }
 

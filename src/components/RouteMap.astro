@@ -3,21 +3,6 @@ import { routeStations } from '../data/route';
 import { milestones } from '../data/log';
 import { figNumbersForPage } from '../data/proof';
 
-/** Координаты станций вдоль SVG-тропы (viewBox 0 0 640 280) */
-const points = [
-  { x: 36, y: 48 },
-  { x: 120, y: 160 },
-  { x: 210, y: 72 },
-  { x: 310, y: 200 },
-  { x: 400, y: 88 },
-  { x: 500, y: 180 },
-  { x: 600, y: 56 },
-];
-
-const pathD = points
-  .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
-  .join(' ');
-
 const figs = figNumbersForPage('playbook');
 ---
 
@@ -61,76 +46,56 @@ const figs = figNumbersForPage('playbook');
       </div>
 
       <div class="route" data-route>
-        <div class="route-svg-wrap">
-          <svg
-            class="route-svg"
-            viewBox="0 0 640 280"
-            role="img"
-            aria-label="Metro-style map of the seven playbook stations"
-          >
-            <path class="route-track" d={pathD}></path>
-            <path class="route-track-draw" d={pathD}></path>
-            {
-              routeStations.map((node, i) => {
-                const p = points[i];
-                return (
-                  <g
-                    class="route-station"
-                    data-route-node
-                    data-step={node.id}
-                    tabindex="0"
-                    role="button"
-                    aria-expanded="false"
-                    aria-label={`${node.title}. ${node.trap}`}
-                  >
-                    <circle cx={p.x} cy={p.y} r="9"></circle>
-                    <text x={p.x} y={p.y - 18} text-anchor="middle">
-                      {String(node.id).padStart(2, '0')} {node.title}
-                    </text>
-                  </g>
-                );
-              })
-            }
-          </svg>
-        </div>
-
-        <ul class="route-list-mobile">
+        <ol class="metro" role="list">
           {
-            routeStations.map((node) => (
-              <li>
-                <button
-                  type="button"
+            routeStations.map((node) => {
+              const open = node.id === 1;
+              const num = String(node.id).padStart(2, '0');
+              return (
+                <li
+                  class:list={['metro-stop', open && 'is-open', node.chapterHref && 'is-available']}
                   data-route-node
                   data-step={node.id}
-                  aria-expanded="false"
                 >
-                  <span class="dot" aria-hidden="true" />
-                  <span>
-                    <span class="label">
-                      {String(node.id).padStart(2, '0')} · {node.title}
-                    </span>
-                    <span class="detail">
-                      <span class="trap-mark">{node.trap}</span>
-                      <br />
-                      {node.tip} ·{' '}
-                      {node.chapterHref ? (
-                        <a href={node.chapterHref}>Read the free chapter</a>
+                  <button
+                    type="button"
+                    class="metro-station"
+                    aria-expanded={open ? 'true' : 'false'}
+                    aria-controls={`route-card-${node.id}`}
+                    data-route-toggle
+                  >
+                    <span class="metro-dot" aria-hidden="true"></span>
+                    <span class="metro-num">{num}</span>
+                    <span class="metro-title">{node.title}</span>
+                  </button>
+                  <div
+                    class="metro-card"
+                    id={`route-card-${node.id}`}
+                    data-route-card
+                    hidden={!open}
+                  >
+                    <p class="metro-card-title">{node.title}</p>
+                    <p class="metro-card-tip">{node.tip}</p>
+                    {
+                      node.chapterHref ? (
+                        <>
+                          <p class="trap-mark">{node.trap}</p>
+                          <a class="btn btn-ghost" href={node.chapterHref}>
+                            Read the free chapter
+                          </a>
+                        </>
                       ) : (
-                        <span class="edition-mark">In the full edition</span>
-                      )}
-                    </span>
-                  </span>
-                </button>
-              </li>
-            ))
+                        <p class="edition-mark">In the full edition</p>
+                      )
+                    }
+                  </div>
+                </li>
+              );
+            })
           }
-        </ul>
-
-        <div class="route-panel" data-route-panel hidden>
-          <p class="trap-mark" data-route-trap></p>
-          <p class="tip" data-route-tip></p>
-          <a class="btn btn-ghost" data-route-link href="#" hidden>Read the free chapter</a>
-          <span class="edition-mark" data-route-full hidden>In the full edition</span>
+        </ol>
+        <div class="metro-line" aria-hidden="true">
+          <div class="metro-line-draw" data-metro-draw></div>
         </div>
 
         <script is:inline define:vars={{ stations: routeStations }}>

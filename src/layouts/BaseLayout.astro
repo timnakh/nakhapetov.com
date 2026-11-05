@@ -42,9 +42,10 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#F2EFE8" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={fullTitle} />
@@ -130,7 +131,10 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
     <a class="sr-only" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="container inner">
-        <a class="brand" href="/">{site.name}</a>
+        <a class="brand" href="/">
+          <img class="brand-mark" src="/logo.svg" alt="" width="28" height="28" />
+          <span>{site.name}</span>
+        </a>
         <nav class="nav" aria-label="Primary">
           <a href="/#projects">Projects</a>
           <a href="/playbook" aria-current={canonicalPath.startsWith('/playbook') ? 'page' : undefined}
@@ -153,6 +157,13 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
         </div>
       </div>
     </footer>
+
+    <dialog class="lightbox" data-lightbox>
+      <form method="dialog" class="lightbox-close-row">
+        <button type="submit" class="btn btn-ghost" aria-label="Close">Close</button>
+      </form>
+      <img data-lightbox-img alt="" width="1200" height="800" />
+    </dialog>
 
     <script src="../scripts/site.ts"></script>
   </body>

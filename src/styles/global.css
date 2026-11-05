@@ -189,7 +189,13 @@ p:last-child {
 }
 
 .section {
-  padding: 4.5rem 0;
+  padding: 3.5rem 0;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 5rem 0;
+  }
 }
 
 .section-title {
@@ -201,7 +207,7 @@ p:last-child {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  background: #f2efe8;
   border-bottom: 1px solid var(--line);
 }
 
@@ -214,12 +220,21 @@ p:last-child {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 1.2rem;
   color: var(--ink);
   text-decoration: none;
   letter-spacing: -0.01em;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
 
 .brand:hover {
@@ -448,13 +463,41 @@ p:last-child {
 
 /* LJ RPG — отдельный мир */
 .lj-world {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   padding: 1.75rem 1.35rem;
   background: var(--lj-bg);
   color: var(--lj-ink);
   border: 2px solid var(--lj-line);
   box-shadow: 6px 6px 0 color-mix(in srgb, var(--lj-accent) 35%, transparent);
   position: relative;
+}
+
+.playbook-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.25rem;
+  background: color-mix(in srgb, var(--surface) 55%, #fff);
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+}
+
+.playbook-card .journal-title {
+  font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+  margin-bottom: 0.35rem;
+}
+
+.playbook-card-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  margin: 0 0 0.85rem;
+  max-width: none;
+}
+
+.playbook-card-desc {
+  color: var(--muted);
+  margin: 0 0 1.15rem;
+  max-width: 38rem;
 }
 
 .lj-world::before {
@@ -521,7 +564,7 @@ p:last-child {
 
 .lj-hero-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   gap: 1rem;
   align-items: end;
 }
@@ -531,6 +574,7 @@ p:last-child {
   border: 1px solid var(--lj-line);
   background: #0e0b09;
   overflow: hidden;
+  margin: 0;
 }
 
 .lj-hero img {
@@ -554,6 +598,10 @@ p:last-child {
 }
 
 @media (min-width: 640px) {
+  .lj-hero-row {
+    grid-template-columns: 1fr auto;
+  }
+
   .lj-mascot {
     display: block;
   }
@@ -561,8 +609,8 @@ p:last-child {
 
 .lj-phones {
   display: flex;
-  gap: 0.85rem;
-  margin-top: 1rem;
+  gap: 1rem;
+  margin-top: 1.15rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -576,24 +624,44 @@ p:last-child {
 
 .phone-frame {
   flex: 0 0 auto;
-  scroll-snap-align: start;
-  width: min(42vw, 9.5rem);
+  scroll-snap-align: center;
+  width: 70vw;
+  max-width: 16rem;
+}
+
+@media (min-width: 768px) {
+  .lj-phones {
+    overflow: visible;
+    scroll-snap-type: none;
+    width: 100%;
+  }
+
+  .phone-frame {
+    flex: 1 1 0;
+    width: auto;
+    max-width: none;
+  }
 }
 
 .phone-bezel {
+  display: block;
+  width: 100%;
   border: 1.5px solid var(--lj-line);
-  border-radius: 1rem;
+  border-radius: 1.15rem;
   overflow: hidden;
   background: #0e0b09;
-  padding: 0.35rem;
+  padding: 0.45rem;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lj-muted) 20%, transparent);
+  cursor: zoom-in;
+  color: inherit;
 }
 
 .phone-bezel img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 0.65rem;
+  border-radius: 0.75rem;
+  pointer-events: none;
 }
 
 .project-actions {
@@ -689,14 +757,14 @@ p:last-child {
 /* Route — метро-схема */
 .route-layout {
   display: grid;
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 @media (min-width: 900px) {
   .route-layout {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
     align-items: start;
-    gap: 3rem;
+    gap: 2.5rem;
   }
 }
 
@@ -729,72 +797,134 @@ p:last-child {
 
 .route {
   position: relative;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0 0.25rem 0.85rem;
 }
 
-.route-svg {
+.metro {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.metro-line {
+  position: absolute;
+  left: 0.85rem;
+  top: 1.1rem;
+  bottom: 1.1rem;
+  width: 3px;
+  background: var(--line);
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.metro-line-draw {
   width: 100%;
-  height: auto;
-  display: block;
-  overflow: visible;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: top center;
+  transform: scaleY(0);
+  transition: transform 0.9s ease;
 }
 
-.route-track {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.route.is-drawn .metro-line-draw {
+  transform: scaleY(1);
 }
 
-.route-track-draw {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1200;
-  stroke-dashoffset: 1200;
-  transition: stroke-dashoffset 0.9s ease;
+.metro-stop {
+  position: relative;
+  padding: 0.35rem 0 0.35rem 1.35rem;
 }
 
-.route.is-drawn .route-track-draw {
-  stroke-dashoffset: 0;
-}
-
-.route-station {
+.metro-station {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 0.65rem;
+  row-gap: 0.15rem;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0.55rem 0;
   cursor: pointer;
+  color: inherit;
+  font: inherit;
 }
 
-.route-station circle {
-  fill: var(--bg);
-  stroke: var(--line);
-  stroke-width: 2.5;
-  transition: fill 0.15s ease, stroke 0.15s ease;
+.metro-dot {
+  grid-row: 1 / span 2;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 2.5px solid var(--accent);
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 0 0 4px var(--bg);
 }
 
-.route-station:hover circle,
-.route-station[aria-expanded='true'] circle,
-.route-station.is-active circle {
-  fill: var(--accent);
-  stroke: var(--accent);
+.metro-stop.is-available .metro-dot,
+.metro-stop:first-child .metro-dot {
+  background: var(--accent);
 }
 
-.route-station text {
+.metro-station:hover .metro-dot,
+.metro-station[aria-expanded='true'] .metro-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.metro-num {
   font-family: var(--font-mono);
-  font-size: 11px;
-  fill: var(--ink);
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
 }
 
-.route-panel {
-  margin-top: 1.25rem;
-  padding: 1rem 0 0;
-  border-top: 1px solid var(--line);
-  min-height: 5.5rem;
+.metro-title {
+  grid-column: 2;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.15;
 }
 
-.route-panel[hidden] {
+.metro-card {
+  margin: 0.15rem 0 0.85rem;
+  padding: 0.9rem 1rem;
+  border: 1.5px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 70%, #fff);
+}
+
+.metro-card[hidden] {
   display: none;
+}
+
+.metro-card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 0.35rem;
+  max-width: none;
+}
+
+.metro-card-tip {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: none;
+}
+
+.metro-card .trap-mark {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.metro-card .btn {
+  margin-top: 0.25rem;
 }
 
 .trap-mark {
@@ -808,76 +938,75 @@ p:last-child {
   color: var(--ink);
 }
 
-.route-panel .tip {
-  margin: 0.5rem 0 0.75rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.route-list-mobile {
-  list-style: none;
-  margin: 1rem 0 0;
-  padding: 0;
-}
-
-.route-list-mobile li {
-  border-bottom: 1px solid var(--line);
-}
-
-.route-list-mobile button {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 2rem 1fr;
-  gap: 0.75rem;
-  align-items: start;
-  text-align: left;
-  background: none;
-  border: 0;
-  padding: 0.9rem 0;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-}
-
-.route-list-mobile .dot {
-  width: 0.85rem;
-  height: 0.85rem;
-  margin-top: 0.35rem;
-  border: 2px solid var(--line);
-  border-radius: 50%;
-  background: var(--bg);
-}
-
-.route-list-mobile button[aria-expanded='true'] .dot {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.route-list-mobile .label {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-}
-
-.route-list-mobile .detail {
-  margin-top: 0.4rem;
-  font-size: 0.9rem;
-  color: var(--muted);
-  display: none;
-}
-
-.route-list-mobile button[aria-expanded='true'] .detail {
-  display: block;
-}
-
 @media (min-width: 768px) {
-  .route-list-mobile {
-    display: none;
+  .route {
+    padding-left: 0;
+    padding-top: 1.75rem;
   }
-}
 
-@media (max-width: 767px) {
-  .route-svg-wrap {
-    display: none;
+  .metro {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.35rem;
+  }
+
+  .metro-line {
+    left: 1.4rem;
+    right: 1.4rem;
+    top: 2.55rem;
+    bottom: auto;
+    width: auto;
+    height: 3px;
+    transform: none;
+  }
+
+  .metro-line-draw {
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .route.is-drawn .metro-line-draw {
+    transform: scaleX(1);
+  }
+
+  .metro-stop {
+    flex: 1 1 0;
+    padding: 0 0.25rem;
+    min-width: 0;
+    position: relative;
+  }
+
+  .metro-station {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    justify-items: center;
+    text-align: center;
+    row-gap: 0.35rem;
+  }
+
+  .metro-dot {
+    grid-row: auto;
+    margin-bottom: 0.15rem;
+  }
+
+  .metro-num {
+    order: -1;
+  }
+
+  .metro-title {
+    grid-column: auto;
+    font-size: 1.05rem;
+  }
+
+  .metro-card {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(100% + 0.5rem);
+    z-index: 3;
+    margin: 0;
+    width: min(17rem, 72vw);
   }
 }
 
@@ -1068,16 +1197,23 @@ p:last-child {
 }
 
 .chapter-column {
-  font-family: var(--font-display);
-  font-size: clamp(1.15rem, 0.4vw + 1.1rem, 1.25rem); /* ~19–20px */
+  font-family: var(--font-body);
+  font-size: 1.1875rem; /* 19px */
   line-height: 1.65;
   color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .chapter-column {
+    font-size: 1.25rem; /* 20px */
+  }
 }
 
 .chapter-column p,
 .chapter-column li {
   color: var(--ink);
   max-width: none;
+  font-family: var(--font-body);
 }
 
 .chapter-column .lede,
@@ -1087,9 +1223,16 @@ p:last-child {
 }
 
 .chapter-column h2 {
-  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
-  margin-top: 2.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3vw, 2.25rem); /* ~1.6–1.8× body */
+  margin-top: 2.75rem;
+  margin-bottom: 1.1rem;
   scroll-margin-top: 4.5rem;
+}
+
+.chapter-column blockquote,
+.chapter-column .chapter-aside em {
+  font-family: var(--font-display);
 }
 
 .chapter-column h2 .anchor {
@@ -1484,6 +1627,10 @@ p:last-child {
   }
 
   .lj-world {
-    padding: 2rem 2rem 1.75rem;
+    padding: 2rem;
+  }
+
+  .playbook-card {
+    padding: 1.75rem 1.75rem 1.5rem;
   }
 }
