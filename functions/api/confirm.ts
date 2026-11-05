@@ -36,10 +36,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   const mailer = createMailer(env);
   const audienceId = env.MAIL_LIST_ID;
-  let already = false;
   if (audienceId) {
-    const result = await mailer.addContact({ email: verified.email, audienceId });
-    already = result.id === 'existing';
+    await mailer.addContact({ email: verified.email, audienceId });
   } else {
     console.warn('[confirm] MAIL_LIST_ID missing — contact not added to audience');
   }
@@ -66,10 +64,5 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     text: `Your free chapter: Identity and entity\n\nThanks for confirming. Your free chapter of the Indie Launch Playbook is ready — Identity and entity, the first step of the route.\n\nRead it here: ${chapterUrl}\n\nThe full playbook and the AI Pack are written. I am checking demand before I open sales. If you want early access, tell me what feels like a fair price:\n${earlyAccessUrl}\n\nReply anytime if something looks outdated.\n\nTim${footer.text}`,
   });
 
-  if (already) {
-    // Still send the chapter; land on thanks without a technical error.
-    return redirect(`${siteUrl}/playbook/thanks`);
-  }
-
-  return redirect(`${siteUrl}/playbook/thanks`);
+  return redirect(`${siteUrl}/playbook/thanks?t=${encodeURIComponent(interestToken)}`);
 };

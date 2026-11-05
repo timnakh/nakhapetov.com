@@ -25,6 +25,8 @@ export interface MailContact {
 export interface Mailer {
   send(message: MailMessage): Promise<{ id: string; dryRun?: boolean }>;
   addContact(contact: MailContact): Promise<{ id: string; dryRun?: boolean }>;
+  /** Returns contact id if present in the audience; null if missing / unknown. */
+  getContact(contact: Pick<MailContact, 'email' | 'audienceId'>): Promise<{ id: string } | null>;
 }
 
 type Env = {
@@ -61,6 +63,13 @@ export function createMailer(env: Env): Mailer {
           properties: contact.properties,
         });
         return { id: `dry-contact-${Date.now()}`, dryRun: true };
+      },
+      async getContact(contact) {
+        console.log('[mailer:dry-run] getContact', {
+          email: contact.email,
+          audienceId: contact.audienceId,
+        });
+        return null;
       },
     };
   }
@@ -119,6 +128,25 @@ export function createMailer(env: Env): Mailer {
         throw new Error(`Resend addContact failed: ${res.status} ${body}`);
       }
       const data = res.status === 409 ? { id: 'existing' } : ((await res.json()) as { id: string });
+      return { id: data.id };
+    },
+    async getContact(contact) {
+      const res = await fetch(
+        `https://api.resend.com/audiences/${encodeURIComponent(contact.audienceId)}/contacts/${encodeURIComponent(contact.email)}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      if (res.status === 404) return null;
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(`Resend getContact failed: ${res.status} ${body}`);
+      }
+      const data = (await res.json()) as { id: string };
       return { id: data.id };
     },
   };
