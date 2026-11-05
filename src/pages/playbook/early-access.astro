@@ -1,9 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SubscribeForm from '../../components/SubscribeForm.astro';
 import { playbook } from '../../data/playbook';
 
-// Static page: token `?t=` is read client-side (Astro build has no request searchParams).
+// Static page: `?t=` / `?email=` are read client-side (Astro build has no request searchParams).
 const priceOptions = [
   { value: 'under_20', label: 'Under $20' },
   { value: '20_40', label: '$20–40' },
@@ -11,6 +10,8 @@ const priceOptions = [
   { value: '80_plus', label: '$80+' },
   { value: 'not_sure', label: 'Not sure yet' },
 ];
+
+const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
 ---
 
 <BaseLayout
@@ -101,16 +102,62 @@ const priceOptions = [
         </form>
       </div>
 
-      <div data-interest-subscribe>
-        <p class="lede" style="font-size: 1.05rem; margin-bottom: 1rem;">
-          Leave your email first. After you confirm, the welcome message includes your early-access link.
+      <div data-interest-gate>
+        <p class="lede" style="font-size: 1.05rem; margin-bottom: 0.75rem;">
+          Already confirmed for the free chapter? Enter the same email — I will open the demand form (no second confirmation).
         </p>
-        <SubscribeForm
-          id="subscribe-early-access"
-          buttonLabel="Get the free chapter"
-          hint="One email with the chapter. After confirm you can tell me what feels fair. Unsubscribe any time."
-          eventName="subscribe_submit"
-        />
+        <p class="hint" style="margin-bottom: 1rem;">
+          New here? You will get one confirm email with the free chapter and an early-access link. This is not a second free-chapter signup.
+        </p>
+        <form
+          id="early-access-gate"
+          class="subscribe-form"
+          method="POST"
+          action="/api/early-access"
+          data-analytics="subscribe"
+          data-subscribe-event="early_access_gate_submit"
+          data-turnstile-form
+        >
+          <label class="sr-only" for="early-access-gate-email">Email</label>
+          <div class="row">
+            <input
+              id="early-access-gate-email"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@example.com"
+              data-gate-email
+            />
+            <div class="hp" aria-hidden="true">
+              <label for="early-access-gate-company">Company</label>
+              <input
+                id="early-access-gate-company"
+                type="text"
+                name="company"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
+            <button class="btn btn-primary" type="submit" data-subscribe-submit>
+              Continue to demand form
+            </button>
+          </div>
+          <div
+            class="cf-turnstile"
+            data-sitekey={siteKey}
+            data-theme="light"
+            data-size="flexible"
+          >
+          </div>
+          <p class="turnstile-hint" data-turnstile-hint hidden>
+            Complete the check above to enable submit.
+          </p>
+          <p class="hint">
+            Prefer the link from your welcome email? It already includes your early-access token.
+          </p>
+        </form>
       </div>
     </div>
   </section>
@@ -120,16 +167,20 @@ const priceOptions = [
   (function () {
     var params = new URLSearchParams(window.location.search);
     var token = (params.get('t') || '').trim();
+    var emailParam = (params.get('email') || '').trim();
     var withToken = document.querySelector('[data-interest-with-token]');
-    var subscribe = document.querySelector('[data-interest-subscribe]');
+    var gate = document.querySelector('[data-interest-gate]');
     var tokenInput = document.querySelector('[data-interest-token]');
+    var emailInput = document.querySelector('[data-gate-email]');
     var comment = document.getElementById('interest-comment');
     var count = document.querySelector('[data-interest-count]');
 
-    if (token && withToken && subscribe && tokenInput) {
+    if (token && withToken && gate && tokenInput) {
       tokenInput.value = token;
       withToken.hidden = false;
-      subscribe.hidden = true;
+      gate.hidden = true;
+    } else if (emailInput && emailParam) {
+      emailInput.value = emailParam;
     }
 
     if (comment && count) {

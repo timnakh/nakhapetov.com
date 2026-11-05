@@ -95,7 +95,7 @@ Site key — публичный (его видно в HTML). Secret key нико
 src/pages/           # /, /playbook, thanks, chapter-1, early-access, /privacy
 src/data/projects.ts # карточки проектов (добавление = новая запись)
 src/data/playbook.ts # checkoutUrl, route, FAQ
-functions/api/       # subscribe, confirm, interest
+functions/api/       # subscribe, confirm, early-access, interest
 functions/lib/       # mailer, token, turnstile, rate-limit
 public/_headers      # CSP и security headers
 ```

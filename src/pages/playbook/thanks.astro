@@ -14,15 +14,26 @@ import { playbook } from '../../data/playbook';
       <p class="margin-note">Confirmed</p>
       <h1 class="hero-title" style="max-width: 12ch;">You're on the list</h1>
       <p class="lede">
-        Thanks for confirming. Your free chapter is ready. The welcome email has a link if you want early access to the full playbook.
+        Thanks for confirming. Your free chapter is ready. You can also signal demand for the full playbook — no purchase on this page.
       </p>
       <div class="cta-row">
         <a class="btn btn-primary btn-large" href={playbook.freeChapterPath}
           >Read the free chapter</a
         >
       </div>
+      <div class="cta-row" data-thanks-early-wrap hidden>
+        <a
+          class="btn btn-primary btn-large"
+          href="/playbook/early-access"
+          data-thanks-early
+          data-event="early_access_click"
+          data-source="thanks"
+        >
+          Get early access to the full playbook
+        </a>
+      </div>
       <p class="thanks-note">
-        Check your spam folder if the email does not arrive in a few minutes.
+        A welcome email is on the way with the same early-access link. Check spam if it does not arrive in a few minutes.
       </p>
       <div class="cta-row">
         <a class="btn btn-ghost" href="/playbook">Back to the playbook</a>
@@ -33,6 +44,15 @@ import { playbook } from '../../data/playbook';
 
 <script is:inline>
   (function () {
+    var params = new URLSearchParams(window.location.search);
+    var token = (params.get('t') || '').trim();
+    var wrap = document.querySelector('[data-thanks-early-wrap]');
+    var link = document.querySelector('[data-thanks-early]');
+    if (token && wrap && link) {
+      link.setAttribute('href', '/playbook/early-access?t=' + encodeURIComponent(token));
+      wrap.removeAttribute('hidden');
+    }
+
     var tries = 0;
     function tick() {
       if (window.posthog && typeof window.posthog.capture === 'function') {
