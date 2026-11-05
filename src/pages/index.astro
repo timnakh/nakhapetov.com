@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { projects } from '../data/projects';
 import { site } from '../data/playbook';
+import { milestones } from '../data/log';
 
 const journal = projects.filter((p) => !p.featuredWorld);
 const worlds = projects.filter((p) => p.featuredWorld);
@@ -15,22 +16,35 @@ const worlds = projects.filter((p) => p.featuredWorld);
   ogImage="/og-home.png"
 >
   <section class="page-hero">
-    <div class="container">
-      <p class="margin-note">Hub · indie builder</p>
-      <h1 class="hero-brand">{site.name}</h1>
-      <h2 class="hero-title" data-word-reveal>
-        I build small apps. Then I write down how it was done.
-      </h2>
-      <p class="lede">
-        Indie developer. Everything here is something I shipped, charged for, or learned the hard way.
-      </p>
-      <p class="updated">Updated Nov 2026</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#projects">See projects</a>
-        <a href="/playbook" style="font-family: var(--font-mono); font-size: 0.85rem;">
-          Read the free chapter →
-        </a>
+    <div class="container hero-split">
+      <div class="hero-copy">
+        <p class="hero-caption">{site.name}</p>
+        <h1 class="hero-title" data-word-reveal>
+          I build small apps. Then I write down how it was done.
+        </h1>
+        <p class="lede">
+          Indie developer. Everything here is something I shipped, charged for, or learned the hard way.
+        </p>
+        <p class="updated">Updated Nov 2026</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#projects">See projects</a>
+          <a href="/playbook" class="text-link">Read the free chapter →</a>
+        </div>
       </div>
+
+      <aside class="hero-log" aria-labelledby="hero-log-heading">
+        <p class="margin-note" id="hero-log-heading">Log</p>
+        <ol class="milestone-log">
+          {
+            milestones.map((m) => (
+              <li>
+                <span class="milestone-date">{m.date}</span>
+                <span class="milestone-event">{m.event}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </aside>
     </div>
   </section>
 

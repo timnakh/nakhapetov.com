@@ -2,7 +2,7 @@
 :root {
   --bg: #f2efe8;
   --ink: #111111;
-  --muted: #5b574e;
+  --muted: #4a463e;
   --line: #cfc9bc;
   --accent: #1f3bff;
   --accent-ink: #ffffff;
@@ -53,6 +53,7 @@ body {
   background-size: 160px 160px;
   color: var(--ink);
   font-family: var(--font-body);
+  /* ≥17px mobile; desktop bumped below */
   font-size: 1.0625rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -484,11 +485,15 @@ p:last-child {
 .play-badge {
   display: inline-flex;
   line-height: 0;
+  /* Official badge: keep aspect ratio, no stretch; ~40px tall clear space */
+  padding: 0.15rem 0;
 }
 
 .play-badge img {
   height: 40px;
   width: auto;
+  max-width: 135px;
+  object-fit: contain;
 }
 
 .play-badge-fallback {
@@ -511,7 +516,8 @@ p:last-child {
 }
 
 /* Screenshot slots */
-.shot-slot {
+.shot-slot,
+.shot-pending {
   border: 1px dashed var(--line);
   background: color-mix(in srgb, var(--surface) 70%, #fff);
   min-height: 10rem;
@@ -521,11 +527,22 @@ p:last-child {
   text-align: center;
 }
 
+.lj-frame.shot-pending {
+  border-style: dashed;
+  background: #0e0b09;
+  min-height: 10rem;
+}
+
 .shot-label {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--muted);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.lj-frame .shot-label {
+  color: var(--lj-muted);
 }
 
 .fig-cap {
@@ -841,25 +858,46 @@ p:last-child {
   padding: 4.5rem 0 3.25rem;
 }
 
-.page-hero .container {
+.hero-split {
   display: grid;
-  gap: 0;
+  gap: 2.5rem;
+  align-items: start;
 }
 
-.hero-brand {
-  font-family: var(--font-display);
-  font-size: clamp(2.8rem, 8vw, 5.5rem);
-  line-height: 0.95;
-  margin: 0 0 1.5rem;
-  max-width: 12ch;
-  color: var(--ink);
+.hero-caption {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  margin: 0 0 0.85rem;
+  max-width: none;
 }
 
 .hero-title {
-  font-size: clamp(1.65rem, 3.8vw, 2.65rem);
-  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.35rem);
+  max-width: 16ch;
   margin-bottom: 1rem;
   font-weight: 400;
+  line-height: 1.05;
+}
+
+.hero-log {
+  border-top: 1px solid var(--line);
+  padding-top: 0.25rem;
+}
+
+.hero-log .milestone-log {
+  border-top: 0;
+}
+
+.hero-log .milestone-log li:first-child {
+  padding-top: 0.35rem;
+}
+
+.text-link {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
 }
 
 .hero-title .word {
@@ -916,6 +954,10 @@ p:last-child {
     --gutter: 24px;
   }
 
+  body {
+    font-size: 1.125rem; /* 18px */
+  }
+
   .stats {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -939,6 +981,11 @@ p:last-child {
 
   .page-hero {
     padding: 5.5rem 0 4rem;
+  }
+
+  .hero-split {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 3rem;
   }
 
   .lj-world {

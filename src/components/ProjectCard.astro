@@ -22,16 +22,31 @@ const num = String(index + 1).padStart(2, '0');
         {project.status}
       </p>
       <p>{project.description}</p>
-      <div class="lj-frame" aria-hidden={project.image ? undefined : true}>
-        {project.image ? (
-          <img src={project.image} alt={project.imageAlt ?? ''} loading="lazy" width="640" height="400" />
-        ) : (
-          <span class="shot-label">screenshot pending</span>
-        )}
-      </div>
-      <p class="fig-cap" style="color: var(--lj-muted);">
-        Fig. 1. Life Journey RPG — app world (asset pending).
-      </p>
+      {project.image ? (
+        <>
+          <div class="lj-frame">
+            <img
+              src={project.image}
+              alt={project.imageAlt ?? ''}
+              loading="lazy"
+              width="640"
+              height="400"
+            />
+          </div>
+          <p class="fig-cap" style="color: var(--lj-muted);">
+            Fig. 1. Life Journey RPG — app world.
+          </p>
+        </>
+      ) : (
+        <>
+          <div class="lj-frame shot-pending" role="img" aria-label="screenshot pending">
+            <span class="shot-label">screenshot pending</span>
+          </div>
+          <p class="fig-cap" style="color: var(--lj-muted);">
+            Fig. 1. Life Journey RPG — app world (asset pending).
+          </p>
+        </>
+      )}
       <div class="project-actions">
         <a
           class="btn btn-primary"
@@ -58,8 +73,8 @@ const num = String(index + 1).padStart(2, '0');
               <img
                 src={project.playStore.badgeSrc}
                 alt="Get it on Google Play"
-                height="40"
-                width="135"
+                width="300"
+                height="89"
               />
             ) : (
               <span>Get it on Google Play</span>

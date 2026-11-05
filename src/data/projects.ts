@@ -43,7 +43,7 @@ export const projects: Project[] = [
     },
     playStore: {
       href: 'https://play.google.com/store/apps/details?id=com.ljrpg.app&referrer=utm_source%3Dnakhapetov.com%26utm_medium%3Dhub%26utm_campaign%3Dcard',
-      // badgeSrc: '/images/google-play-badge.png' — владелец укажет путь
+      badgeSrc: '/images/google-play-badge.png',
     },
     // image: '/images/lj-rpg-screenshot.png' — владелец предоставит файл
     imageAlt: 'Life Journey RPG app preview placeholder',
