@@ -75,15 +75,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     subject: 'Confirm your email for the Playbook',
     replyTo: 'hello@nakhapetov.com',
     html: `
-      <div style="font-family:Georgia,serif;background:#F2EFE8;color:#111111;padding:32px;max-width:560px;">
-        <h1 style="font-size:22px;margin:0 0 12px;font-weight:400;">Confirm your email</h1>
-        <p style="color:#4A463E;line-height:1.55;">One click to confirm your email for the Indie Launch Playbook. This link expires in 48 hours.</p>
-        <p style="margin:28px 0;"><a href="${confirmUrl}" style="display:inline-block;background:#1F3BFF;color:#ffffff;padding:12px 20px;text-decoration:none;">Confirm email</a></p>
-        <p style="color:#4A463E;font-size:13px;">Or open this URL:<br/>${confirmUrl}</p>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111111;max-width:560px;line-height:1.55;font-size:16px;">
+        <p style="margin:0 0 1em;">One click to confirm your email for the Indie Launch Playbook. This link expires in 48 hours.</p>
+        <p style="margin:0 0 1em;"><a href="${confirmUrl}" style="color:#111111;text-decoration:underline;">Confirm email</a></p>
+        <p style="margin:0 0 1em;">Tim</p>
         ${footer.html}
       </div>
     `,
-    text: `Confirm your email for the Playbook\n\nOpen this link within 48 hours:\n${confirmUrl}${footer.text}`,
+    text: `Confirm your email for the Playbook\n\nOne click to confirm your email for the Indie Launch Playbook. This link expires in 48 hours.\n\nConfirm email:\n${confirmUrl}\n\nTim${footer.text}`,
   });
 
   return redirect(`${siteUrl}/playbook/check-email`);

@@ -10,8 +10,8 @@ Original LJ RPG art and screens. Processed derivatives live in `public/img/lj/` 
 | `lj-rpg-hero-alt.png` | Spare — not used on site (style mismatch) |
 | `lj-rpg-phone-1-quests.png` | Phone frame 1 |
 | `lj-rpg-phone-2-rituals.png` | Phone frame 2 |
-| `lj-rpg-phone-3-focus.png` | Phone frame 3 — `enabled: false` until replaced |
-| `lj-rpg-phone-4-chronicle.png` | Phone frame 4 — `enabled: false` until replaced |
+| `lj/phone-3-focus.png` | Phone frame 3 (Focus Mode) — also mirrored as `lj-rpg-phone-3-focus.png` |
+| `lj/phone-4-chronicle.png` | Phone frame 4 (Chronicle) — also mirrored as `lj-rpg-phone-4-chronicle.png` |
 | `linter.png` | Mascot on dark LJ panel only |
 | `linter-512.png` | Small avatar |
 

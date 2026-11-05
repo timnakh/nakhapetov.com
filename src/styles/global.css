@@ -662,12 +662,18 @@ p:last-child {
     overflow: visible;
     scroll-snap-type: none;
     width: 100%;
+    align-items: stretch;
   }
 
   .phone-frame {
     flex: 1 1 0;
     width: auto;
     max-width: none;
+    display: flex;
+  }
+
+  .phone-bezel {
+    height: 100%;
   }
 }
 
@@ -687,6 +693,8 @@ p:last-child {
 .phone-bezel img {
   width: 100%;
   height: auto;
+  aspect-ratio: 540 / 1200;
+  object-fit: cover;
   display: block;
   border-radius: 0.75rem;
   pointer-events: none;
