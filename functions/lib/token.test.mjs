@@ -3,10 +3,13 @@
  * Run: node functions/lib/token.test.mjs
  */
 import {
+  CHAPTER_TOKEN_TTL_MS,
   CONFIRM_TOKEN_TTL_MS,
   INTEREST_TOKEN_TTL_MS,
+  signChapterToken,
   signConfirmToken,
   signInterestToken,
+  verifyChapterToken,
   verifyConfirmToken,
   verifyInterestToken,
 } from './token.ts';
@@ -56,6 +59,39 @@ for (const email of emails) {
   const tooOld = await signInterestToken(email, secret, Date.now() - INTEREST_TOKEN_TTL_MS - 60_000);
   if (await verifyInterestToken(tooOld, secret)) {
     console.error('FAIL interest expiry', email);
+    failed++;
+    continue;
+  }
+  // Chapter accepts tokens within 30d (including ones past interest TTL)
+  const chapterFresh = await signChapterToken(email, secret);
+  const chapterOk = await verifyChapterToken(chapterFresh, secret);
+  if (!chapterOk || chapterOk.email !== email.toLowerCase()) {
+    console.error('FAIL chapter', email);
+    failed++;
+    continue;
+  }
+  const pastInterest = await signChapterToken(
+    email,
+    secret,
+    Date.now() - INTEREST_TOKEN_TTL_MS - 60_000,
+  );
+  if (!(await verifyChapterToken(pastInterest, secret))) {
+    console.error('FAIL chapter still valid after interest TTL', email);
+    failed++;
+    continue;
+  }
+  if (await verifyInterestToken(pastInterest, secret)) {
+    console.error('FAIL interest should reject past-48h chapter token', email);
+    failed++;
+    continue;
+  }
+  const chapterExpired = await signChapterToken(
+    email,
+    secret,
+    Date.now() - CHAPTER_TOKEN_TTL_MS - 60_000,
+  );
+  if (await verifyChapterToken(chapterExpired, secret)) {
+    console.error('FAIL chapter expiry', email);
     failed++;
     continue;
   }

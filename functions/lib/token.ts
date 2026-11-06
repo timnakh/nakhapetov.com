@@ -3,11 +3,13 @@
  * Format: base64url(email + '.' + ts) + '.' + hex(hmac-sha256)
  *
  * Confirm links: 48h. Early-access / interest links: 48h (same payload shape).
+ * Free chapter links: 30 days (same payload shape, longer TTL on verify).
  * Important: email may contain dots — parse timestamp from the last '.' of the payload.
  */
 
 export const CONFIRM_TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
 export const INTEREST_TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
+export const CHAPTER_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 function toHex(buf: ArrayBuffer): string {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -95,4 +97,14 @@ export async function verifyInterestToken(
   return verifyConfirmToken(token, secret, now, INTEREST_TOKEN_TTL_MS);
 }
 
+/** Same HMAC shape as confirm; verified with the chapter TTL (30 days). */
+export async function verifyChapterToken(
+  token: string,
+  secret: string,
+  now = Date.now(),
+): Promise<{ email: string } | null> {
+  return verifyConfirmToken(token, secret, now, CHAPTER_TOKEN_TTL_MS);
+}
+
 export const signInterestToken = signConfirmToken;
+export const signChapterToken = signConfirmToken;

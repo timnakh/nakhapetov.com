@@ -28,8 +28,59 @@ const showBuy = Boolean(playbook.checkoutUrl);
         Web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.
       </p>
       <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
+      <p class="form-status is-ok" role="status" data-chapter-link-sent-slot hidden></p>
       <div style="margin-top: 2rem;">
         <SubscribeForm id="subscribe" />
+      </div>
+      <div class="chapter-resend" style="margin-top: 1.5rem; max-width: 36rem;">
+        <p class="hint" style="margin-bottom: 0.75rem;">
+          Already confirmed? Enter the same email — if it is subscribed, I will send your chapter link again.
+        </p>
+        <form
+          id="chapter-link-resend"
+          class="subscribe-form"
+          method="POST"
+          action="/api/chapter-link"
+          data-analytics="subscribe"
+          data-subscribe-event="chapter_link_resend"
+          data-turnstile-form
+        >
+          <label class="sr-only" for="chapter-link-email">Email</label>
+          <div class="row">
+            <input
+              id="chapter-link-email"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@example.com"
+            />
+            <div class="hp" aria-hidden="true">
+              <label for="chapter-link-company">Company</label>
+              <input
+                id="chapter-link-company"
+                type="text"
+                name="company"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
+            <button class="btn btn-ghost" type="submit" data-subscribe-submit>
+              Resend my link
+            </button>
+          </div>
+          <div
+            class="cf-turnstile"
+            data-sitekey=""
+            data-theme="light"
+            data-size="flexible"
+          >
+          </div>
+          <p class="turnstile-hint" data-turnstile-hint hidden>
+            Complete the check above to enable submit.
+          </p>
+        </form>
       </div>
       {
         showBuy && (
@@ -113,7 +164,11 @@ const showBuy = Boolean(playbook.checkoutUrl);
     <div class="container">
       <h2 class="section-title" id="again-heading">Get the free chapter</h2>
       <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
+      <p class="form-status is-ok" role="status" data-chapter-link-sent-slot hidden></p>
       <SubscribeForm id="subscribe-footer" />
+      <p class="hint" style="margin-top: 1rem;">
+        Already on the list? Use <a href="#subscribe">Resend my link</a> above.
+      </p>
       {
         showBuy && (
           <div class="cta-row">

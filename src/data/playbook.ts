@@ -6,7 +6,10 @@
 export const playbook = {
   checkoutUrl: '' as string,
   edition: 'November 2026',
-  freeChapterPath: '/playbook/chapter-1',
+  /** Public CTA — gated chapter opens only with ?t= after confirm. */
+  freeChapterPath: '/playbook#subscribe',
+  /** HMAC-gated route (not for public nav). */
+  freeChapterRoute: '/playbook/chapter-1',
   stats: [
     { value: '6', label: 'steps in order' },
     { value: '17', label: 'traps and fixes' },
