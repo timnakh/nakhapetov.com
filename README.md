@@ -57,7 +57,8 @@ npx wrangler pages dev dist
 | `PUBLIC_TURNSTILE_SITE_KEY` | **Build** + Production (+ Preview) | То же публичное значение — Astro читает его **только на сборке** в `data-sitekey` / `data-turnstile-site-key` |
 | `MAIL_PROVIDER_API_KEY` | Production (secret) | API-ключ Resend |
 | `MAIL_LIST_ID` | Production | ID Audience (списка) в Resend |
-| `MAIL_INTEREST_LIST_ID` | Production (опционально) | Отдельный Resend Audience / segment для early-access demand; без него `/api/interest` пишет в лог и не падает |
+| `MAIL_INTEREST_LIST_ID` | Production (опционально) | Отдельный Resend Segment (ex-Audience) для early-access demand; без него `/api/interest` пишет в лог и не падает. Interest пишет contact props `price_choice` / `interest_comment` через Contacts API |
+| `INTEREST_KV` | Production (опционально, KV binding) | Fallback store для interest, если Resend отклоняет custom properties |
 | `MAIL_FROM` | Production (опционально) | Например `Playbook <hello@nakhapetov.com>` |
 | `MAIL_DRY_RUN` | Production (опционально) | `1` — не слать письма, писать в лог |
 | `TOKEN_SECRET` | Production (secret) | Секрет HMAC для ссылок подтверждения (48 ч) |
