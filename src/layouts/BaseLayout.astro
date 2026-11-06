@@ -1,10 +1,10 @@
 ---
-import '@fontsource/instrument-serif/400.css';
-import '@fontsource/instrument-sans/400.css';
-import '@fontsource/instrument-sans/500.css';
-import '@fontsource/instrument-sans/600.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/instrument-sans/latin-400.css';
+import '@fontsource/instrument-sans/latin-500.css';
+import '@fontsource/instrument-sans/latin-600.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
 import '../styles/global.css';
 import { site } from '../data/playbook';
 
@@ -16,6 +16,8 @@ interface Props {
   ogType?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
+  /** Load Cloudflare Turnstile only on pages with a subscribe/gate form. */
+  turnstile?: boolean;
 }
 
 const {
@@ -26,6 +28,7 @@ const {
   ogType = 'website',
   jsonLd,
   noindex = false,
+  turnstile = false,
 } = Astro.props;
 
 const canonical = new URL(canonicalPath, site.url).toString();
@@ -69,60 +72,77 @@ const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
     <slot name="head" />
 
     {/* Explicit render: key may arrive at build (PUBLIC_) or via Pages middleware at request time */}
-    <script
-      src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-      async
-      defer
-    ></script>
+    {
+      turnstile && (
+        <script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          async
+          defer
+        ></script>
+      )
+    }
     {
       posthogKey && (
         <script is:inline define:vars={{ posthogKey }}>
-          !(function (t, e) {
-            var o, n, p, r;
-            e.__SV ||
-              ((window.posthog = e),
-              (e._i = []),
-              (e.init = function (i, s, a) {
-                function g(t, e) {
-                  var o = e.split('.');
-                  2 == o.length && ((t = t[o[0]]), (e = o[1]));
-                  t[e] = function () {
-                    t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
-                  };
-                }
-                (p = t.createElement('script')).type = 'text/javascript';
-                p.crossOrigin = 'anonymous';
-                p.async = !0;
-                p.src = s.api_host.replace('.i.posthog.com', '-assets.i.posthog.com') + '/static/array.js';
-                r = t.getElementsByTagName('script')[0];
-                r.parentNode.insertBefore(p, r);
-                var u = e;
-                void 0 !== a ? (u = e[a] = []) : (a = 'posthog');
-                u.people = u.people || [];
-                u.toString = function (t) {
-                  var e = 'posthog';
-                  return 'posthog' !== a && (e += '.' + a), t || (e += ' (stub)'), e;
-                };
-                u.people.toString = function () {
-                  return u.toString(1) + '.people (stub)';
-                };
-                o =
-                  'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug'.split(
-                    ' ',
-                  );
-                for (n = 0; n < o.length; n++) g(u, o[n]);
-                e._i.push([i, s, a]);
-              }),
-              (e.__SV = 1));
-          })(document, window.posthog || []);
-          posthog.init(posthogKey, {
-            api_host: 'https://eu.i.posthog.com',
-            ui_host: 'https://eu.posthog.com',
-            persistence: 'memory',
-            autocapture: false,
-            capture_pageview: false,
-            disable_session_recording: true,
-          });
+          (function (key) {
+            function boot() {
+              !(function (t, e) {
+                var o, n, p, r;
+                e.__SV ||
+                  ((window.posthog = e),
+                  (e._i = []),
+                  (e.init = function (i, s, a) {
+                    function g(t, e) {
+                      var o = e.split('.');
+                      2 == o.length && ((t = t[o[0]]), (e = o[1]));
+                      t[e] = function () {
+                        t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                      };
+                    }
+                    (p = t.createElement('script')).type = 'text/javascript';
+                    p.crossOrigin = 'anonymous';
+                    p.async = !0;
+                    p.src =
+                      s.api_host.replace('.i.posthog.com', '-assets.i.posthog.com') +
+                      '/static/array.js';
+                    r = t.getElementsByTagName('script')[0];
+                    r.parentNode.insertBefore(p, r);
+                    var u = e;
+                    void 0 !== a ? (u = e[a] = []) : (a = 'posthog');
+                    u.people = u.people || [];
+                    u.toString = function (t) {
+                      var e = 'posthog';
+                      return 'posthog' !== a && (e += '.' + a), t || (e += ' (stub)'), e;
+                    };
+                    u.people.toString = function () {
+                      return u.toString(1) + '.people (stub)';
+                    };
+                    o =
+                      'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug'.split(
+                        ' ',
+                      );
+                    for (n = 0; n < o.length; n++) g(u, o[n]);
+                    e._i.push([i, s, a]);
+                  }),
+                  (e.__SV = 1));
+              })(document, window.posthog || []);
+              posthog.init(key, {
+                api_host: 'https://eu.i.posthog.com',
+                ui_host: 'https://eu.posthog.com',
+                persistence: 'memory',
+                autocapture: false,
+                capture_pageview: false,
+                disable_session_recording: true,
+                disable_surveys: true,
+                advanced_disable_feature_flags: true,
+              });
+            }
+            if ('requestIdleCallback' in window) {
+              requestIdleCallback(boot, { timeout: 2500 });
+            } else {
+              setTimeout(boot, 1);
+            }
+          })(posthogKey);
         </script>
       )
     }

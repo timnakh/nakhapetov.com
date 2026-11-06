@@ -55,7 +55,7 @@ export const projects: Project[] = [
     description:
       'From vibe-coded app to paid product: web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked.',
     cta: {
-      label: 'Read the free chapter',
+      label: 'Get the free chapter',
       href: '/playbook',
     },
   },

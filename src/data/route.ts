@@ -18,7 +18,8 @@ export const routeStations: RouteStation[] = [
     title: 'Identity',
     tip: 'entity, bank, D-U-N-S, business email',
     trap: 'Name spelled differently in the D-U-N-S record and at the bank.',
-    chapterHref: '/playbook/chapter-1',
+    /** In-page subscribe form on /playbook (chapter URL stays at /playbook/chapter-1). */
+    chapterHref: '#subscribe',
   },
   {
     id: 2,

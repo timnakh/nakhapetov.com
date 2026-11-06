@@ -16,6 +16,7 @@ const showBuy = Boolean(playbook.checkoutUrl);
   description="From vibe-coded app to paid product: web payments, Google Play, subscriptions and an AI Pack. The route in order, with every wrong turn marked."
   canonicalPath="/playbook"
   ogImage="/og-playbook.png"
+  turnstile
 >
   <section class="page-hero">
     <div class="container">
@@ -28,7 +29,7 @@ const showBuy = Boolean(playbook.checkoutUrl);
       </p>
       <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
       <div style="margin-top: 2rem;">
-        <SubscribeForm id="subscribe-hero" />
+        <SubscribeForm id="subscribe" />
       </div>
       {
         showBuy && (
