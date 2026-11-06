@@ -1,5 +1,5 @@
 /**
- * Карта маршрута плейбука (7 станций).
+ * Карта маршрута плейбука (6 станций).
  * Править здесь — без правок вёрстки.
  */
 export interface RouteStation {
@@ -53,13 +53,6 @@ export const routeStations: RouteStation[] = [
     title: 'Billing',
     tip: 'subscriptions, notifications, 15% fee',
     trap: 'Subscriptions, notifications, 15% fee.',
-    chapterHref: null,
-  },
-  {
-    id: 7,
-    title: 'Promotion',
-    tip: 'plan, measure, iterate',
-    trap: 'Plan, measure, iterate.',
     chapterHref: null,
   },
 ];

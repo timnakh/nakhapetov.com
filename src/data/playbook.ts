@@ -8,7 +8,7 @@ export const playbook = {
   edition: 'November 2026',
   freeChapterPath: '/playbook/chapter-1',
   stats: [
-    { value: '7', label: 'steps in order' },
+    { value: '6', label: 'steps in order' },
     { value: '17', label: 'traps and fixes' },
     { value: '14', label: 'AI briefs' },
     {
@@ -32,7 +32,7 @@ export const playbook = {
     },
     {
       q: 'What does it cover?',
-      a: "Web payments through a merchant of record, Google Play setup, review, subscriptions, the fee program and a zero-budget promotion plan.",
+      a: 'Web payments through a merchant of record, Google Play setup, review, subscriptions and the fee program.',
     },
   ],
 };
