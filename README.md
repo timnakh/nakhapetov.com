@@ -116,6 +116,6 @@ public/_headers      # CSP и security headers
 - [ ] Письмо не в спаме; ссылка отписки работает
 - [ ] Email Routing: `hello@nakhapetov.com`
 - [ ] Бейдж Google Play и скриншот LJ RPG от владельца
-- [ ] В `/privacy` заменить `[owner fills]`
+- [x] В `/privacy` указать data controller (NAKHAPETOV ARTEM PE, Armenia)
 - [ ] Текст бесплатной главы вместо заглушки `/playbook/chapter-1`
 - [ ] Мобильная вёрстка и Lighthouse (цель 95+ по всем пунктам)

@@ -24,8 +24,8 @@ export const proofShots: ProofShot[] = [
   {
     id: 'paddle-live',
     file: 'paddle-live',
-    alt: 'Paddle dashboard showing live payments enabled',
-    caption: 'Paddle dashboard, live payments enabled.',
+    alt: 'Paddle dashboard in Live mode after successful integration',
+    caption: 'Paddle dashboard in Live mode after a successful integration.',
     width: 1600,
     height: 890,
     page: 'playbook',
@@ -33,8 +33,8 @@ export const proofShots: ProofShot[] = [
   {
     id: 'play-approved',
     file: 'play-approved',
-    alt: 'Google Play Console showing app review approved on Nov 2',
-    caption: 'Play Console, Nov 2. Review approved.',
+    alt: 'Google Play Console dashboard for the published Life Journey RPG app',
+    caption: 'Play Console dashboard for the published app.',
     width: 1600,
     height: 465,
     page: 'playbook',
@@ -42,8 +42,8 @@ export const proofShots: ProofShot[] = [
   {
     id: 'play-subscriptions',
     file: 'play-subscriptions',
-    alt: 'Google Play Console showing subscriptions created on Nov 4',
-    caption: 'Play Console, Nov 4. Subscriptions created.',
+    alt: 'Google Play Console Subscriptions page listing Hero and Legend',
+    caption: 'Play Console Subscriptions page with Hero and Legend (last updated Nov 4).',
     width: 1600,
     height: 457,
     page: 'playbook',

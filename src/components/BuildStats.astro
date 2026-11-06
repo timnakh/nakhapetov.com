@@ -1,0 +1,34 @@
+---
+import { buildStats, buildStatsAsOf } from '../data/build-stats';
+
+interface Props {
+  headingId?: string;
+}
+
+const { headingId = 'by-the-numbers-heading' } = Astro.props;
+---
+
+<div class="build-stats" aria-labelledby={headingId}>
+  <p class="margin-note" id={headingId}>By the numbers</p>
+  <div class="build-stats-row">
+    {
+      buildStats.map((stat) => (
+        <div class="build-stat">
+          <div
+            class="build-stat-value"
+            data-count-up
+            data-value={stat.value}
+            data-numeric={String(stat.numeric)}
+            data-prefix={stat.prefix ?? ''}
+            data-suffix={stat.suffix ?? ''}
+            data-decimals={String(stat.decimals ?? 0)}
+          >
+            {stat.value}
+          </div>
+          <p class="build-stat-label">{stat.label}</p>
+        </div>
+      ))
+    }
+  </div>
+  <p class="build-stats-asof">{buildStatsAsOf}</p>
+</div>

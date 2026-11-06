@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import BuildStats from '../components/BuildStats.astro';
 import { projects } from '../data/projects';
 import { site } from '../data/playbook';
 import { milestones } from '../data/log';
@@ -77,7 +78,14 @@ const figs = figNumbersForPage('playbook');
       <p class="sr-only">Log entries</p>
       <h2 class="section-title" id="projects-heading">Projects</h2>
 
-      {worlds.map((project, i) => <ProjectCard project={project} index={i} />)}
+      {
+        worlds.map((project, i) => (
+          <>
+            <ProjectCard project={project} index={i} />
+            {project.id === 'lj-rpg' ? <BuildStats headingId="home-by-the-numbers" /> : null}
+          </>
+        ))
+      }
 
       {
         playbookProject && (

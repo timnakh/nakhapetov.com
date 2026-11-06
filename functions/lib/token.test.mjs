@@ -45,9 +45,9 @@ for (const email of emails) {
     failed++;
     continue;
   }
-  // Interest accepts tokens within 90d (including a 2-day-old confirm-shaped token)
-  const twoDays = await signInterestToken(email, secret, Date.now() - 2 * 24 * 60 * 60 * 1000);
-  const interestOk = await verifyInterestToken(twoDays, secret);
+  // Interest accepts tokens within 48h
+  const fresh = await signInterestToken(email, secret, Date.now() - 60 * 60 * 1000);
+  const interestOk = await verifyInterestToken(fresh, secret);
   if (!interestOk || interestOk.email !== email.toLowerCase()) {
     console.error('FAIL interest', email);
     failed++;

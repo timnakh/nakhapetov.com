@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SubscribeForm from '../../components/SubscribeForm.astro';
+import AppIntro from '../../components/AppIntro.astro';
 import RouteMap from '../../components/RouteMap.astro';
 import EvidenceBlock from '../../components/EvidenceBlock.astro';
 import { playbook } from '../../data/playbook';
@@ -40,6 +41,8 @@ const showBuy = Boolean(playbook.checkoutUrl);
       }
     </div>
   </section>
+
+  <AppIntro />
 
   <RouteMap />
 
