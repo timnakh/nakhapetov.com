@@ -18,7 +18,7 @@ export const routeStations: RouteStation[] = [
     title: 'Identity',
     tip: 'entity, bank, D-U-N-S, business email',
     trap: 'Name spelled differently in the D-U-N-S record and at the bank.',
-    /** In-page subscribe form on /playbook (chapter URL stays at /playbook/chapter-1). */
+    /** In-page subscribe / resend form — chapter opens only with HMAC ?t=. */
     chapterHref: '#subscribe',
   },
   {

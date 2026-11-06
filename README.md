@@ -61,7 +61,7 @@ npx wrangler pages dev dist
 | `INTEREST_KV` | Production (опционально, KV binding) | Fallback store для interest, если Resend отклоняет custom properties |
 | `MAIL_FROM` | Production (опционально) | Например `Playbook <hello@nakhapetov.com>` |
 | `MAIL_DRY_RUN` | Production (опционально) | `1` — не слать письма, писать в лог |
-| `TOKEN_SECRET` | Production (secret) | Секрет HMAC для ссылок подтверждения (48 ч) |
+| `TOKEN_SECRET` | Production (secret) | Секрет HMAC: confirm/early-access 48 ч; free chapter 30 дней |
 | `POSTHOG_KEY` | Production | Ключ проекта PostHog |
 | `PUBLIC_POSTHOG_KEY` | Build + Production | То же значение, что `POSTHOG_KEY` — для сборки Astro |
 | `SITE_URL` | Production | `https://nakhapetov.com` |
@@ -80,7 +80,7 @@ Astro — статическая сборка. Переменная без пр�
 4. Добавьте **`PUBLIC_TURNSTILE_SITE_KEY`** с **тем же** публичным site key. Важно: переменная должна быть доступна **на этапе Build** (в UI Cloudflare — Build variables / галочка доступности при сборке, не только Runtime). Production и Preview.
 5. То же для PostHog, если аналитика пустая: `PUBLIC_POSTHOG_KEY` на Build.
 6. **Save** → **Deployments** → **Retry deployment** / новый деплой с `main`, чтобы пересобрать HTML.
-7. Проверка после деплоя (cache-bust): View Source на `/playbook/` и `/playbook/chapter-1/` — есть `challenges.cloudflare.com/turnstile`, у `.cf-turnstile` непустой `data-sitekey`, у `<body>` непустой `data-turnstile-site-key`.
+7. Проверка после деплоя (cache-bust): View Source на `/playbook/` — есть `challenges.cloudflare.com/turnstile`, у `.cf-turnstile` непустой `data-sitekey`, у `<body>` непустой `data-turnstile-site-key`. `/playbook/chapter-1` без `?t=` → 302 на `/playbook#subscribe`.
 
 Site key — публичный (его видно в HTML). Secret key никогда не в `PUBLIC_*` и не в клиентский код.
 
@@ -96,7 +96,8 @@ Site key — публичный (его видно в HTML). Secret key нико
 src/pages/           # /, /playbook, thanks, chapter-1, early-access, /privacy
 src/data/projects.ts # карточки проектов (добавление = новая запись)
 src/data/playbook.ts # checkoutUrl, route, FAQ
-functions/api/       # subscribe, confirm, early-access, interest
+functions/api/       # subscribe, confirm, chapter-link, early-access, interest
+functions/playbook/  # chapter-1 HMAC gate (HTML under dist/__protected)
 functions/lib/       # mailer, token, turnstile, rate-limit
 public/_headers      # CSP и security headers
 ```

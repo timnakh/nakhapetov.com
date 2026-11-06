@@ -1,11 +1,15 @@
 /**
  * Request-time HTML fixes for the static Astro build:
- * 1) Inject Turnstile site key (build may lack PUBLIC_*; runtime TURNSTILE_SITE_KEY still works).
- * 2) Inject ?error= alerts (Astro static pages cannot read search params at request time).
+ * 1) Block direct access to /__protected/* (chapter HTML is not a public static URL).
+ * 2) Gate /playbook/chapter-1 (trailing slash too) via HMAC before any HTML.
+ * 3) Inject Turnstile site key (build may lack PUBLIC_*; runtime TURNSTILE_SITE_KEY still works).
+ * 4) Inject ?error= / ?sent= alerts (Astro static pages cannot read search params at request time).
  * Values never logged.
  */
 
-interface Env {
+import { gateChapterRequest, type ChapterGateEnv } from './lib/chapter-gate';
+
+interface Env extends ChapterGateEnv {
   TURNSTILE_SITE_KEY?: string;
   PUBLIC_TURNSTILE_SITE_KEY?: string;
 }
@@ -36,7 +40,27 @@ function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;');
 }
 
+function normalizePath(pathname: string): string {
+  if (pathname.length > 1 && pathname.endsWith('/')) {
+    return pathname.slice(0, -1);
+  }
+  return pathname || '/';
+}
+
 export const onRequest: PagesFunction<Env> = async (context) => {
+  const url = new URL(context.request.url);
+  const path = normalizePath(url.pathname);
+
+  // Chapter HTML must not be reachable at its asset path.
+  if (path === '/__protected' || path.startsWith('/__protected/')) {
+    return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
+  }
+
+  // Trailing-slash and non-slash both gated here (Function also covers exact path).
+  if (path === '/playbook/chapter-1') {
+    return gateChapterRequest(context.request, context.env);
+  }
+
   const response = await context.next();
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.includes('text/html')) {
@@ -44,7 +68,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   }
 
   const siteKey = siteKeyFromEnv(context.env);
-  const url = new URL(context.request.url);
   const errorCode = url.searchParams.get('error') || '';
   const errorMessage = ERROR_MESSAGES[errorCode] || '';
   const sentOk = url.searchParams.get('sent') === '1';
@@ -83,6 +106,14 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   if (sentOk) {
     const html = escapeHtml(SENT_MESSAGE);
     rewriter.on('[data-early-access-sent-slot]', {
+      element(el) {
+        el.setAttribute('role', 'status');
+        el.setAttribute('class', 'form-status is-ok');
+        el.removeAttribute('hidden');
+        el.setInnerContent(html, { html: true });
+      },
+    });
+    rewriter.on('[data-chapter-link-sent-slot]', {
       element(el) {
         el.setAttribute('role', 'status');
         el.setAttribute('class', 'form-status is-ok');

@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { playbook } from '../../data/playbook';
 ---
 
 <BaseLayout
@@ -17,7 +16,10 @@ import { playbook } from '../../data/playbook';
         Thanks for confirming. Your free chapter is ready. You can also signal demand for the full playbook — no purchase on this page.
       </p>
       <div class="cta-row">
-        <a class="btn btn-primary btn-large" href={playbook.freeChapterPath}
+        <a
+          class="btn btn-primary btn-large"
+          href="/playbook#subscribe"
+          data-thanks-chapter
           >Read the free chapter</a
         >
       </div>
@@ -33,7 +35,7 @@ import { playbook } from '../../data/playbook';
         </a>
       </div>
       <p class="thanks-note">
-        A welcome email is on the way with the same early-access link. Check spam if it does not arrive in a few minutes.
+        A welcome email is on the way with the same chapter and early-access links. Check spam if it does not arrive in a few minutes.
       </p>
       <div class="cta-row">
         <a class="btn btn-ghost" href="/playbook">Back to the playbook</a>
@@ -46,8 +48,12 @@ import { playbook } from '../../data/playbook';
   (function () {
     var params = new URLSearchParams(window.location.search);
     var token = (params.get('t') || '').trim();
+    var chapter = document.querySelector('[data-thanks-chapter]');
     var wrap = document.querySelector('[data-thanks-early-wrap]');
     var link = document.querySelector('[data-thanks-early]');
+    if (token && chapter) {
+      chapter.setAttribute('href', '/playbook/chapter-1?t=' + encodeURIComponent(token));
+    }
     if (token && wrap && link) {
       link.setAttribute('href', '/playbook/early-access?t=' + encodeURIComponent(token));
       wrap.removeAttribute('hidden');

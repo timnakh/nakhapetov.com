@@ -7,7 +7,10 @@ export default defineConfig({
   site: 'https://nakhapetov.com',
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/playbook/early-access'),
+      filter: (page) =>
+        !page.includes('/playbook/early-access') &&
+        !page.includes('/playbook/chapter-1') &&
+        !page.includes('/__protected'),
     }),
   ],
   compressHTML: true,
