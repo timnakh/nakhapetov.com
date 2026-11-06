@@ -317,6 +317,62 @@ function waitForPostHogAndView() {
   tick();
 }
 
+function initCountUp() {
+  const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-count-up]'));
+  if (!nodes.length) return;
+
+  const format = (el: HTMLElement, n: number) => {
+    const prefix = el.dataset.prefix ?? '';
+    const suffix = el.dataset.suffix ?? '';
+    const decimals = Number(el.dataset.decimals ?? '0');
+    const body = decimals > 0 ? n.toFixed(decimals) : String(Math.round(n));
+    return `${prefix}${body}${suffix}`;
+  };
+
+  const finish = (el: HTMLElement) => {
+    el.textContent = el.dataset.value ?? el.textContent;
+  };
+
+  if (reducedMotion) {
+    nodes.forEach(finish);
+    return;
+  }
+
+  const duration = 1100;
+  const animate = (el: HTMLElement) => {
+    const target = Number(el.dataset.numeric ?? '0');
+    if (!Number.isFinite(target)) {
+      finish(el);
+      return;
+    }
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = format(el, target * eased);
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        finish(el);
+      }
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const el = entry.target as HTMLElement;
+        io.unobserve(el);
+        animate(el);
+      }
+    },
+    { threshold: 0.4 },
+  );
+  nodes.forEach((el) => io.observe(el));
+}
+
 splitHeroWords();
 initJournalRows();
 initRoute();
@@ -325,4 +381,5 @@ initLightbox();
 initCopyTemplate();
 initChapter();
 initAnalyticsClicks();
+initCountUp();
 waitForPostHogAndView();

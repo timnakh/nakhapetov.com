@@ -14,12 +14,15 @@ const ERROR_MESSAGES: Record<string, string> = {
   turnstile: 'Please confirm you are human and try again.',
   email: 'That email address does not look right. Please check and try again.',
   rate_limit: 'Too many attempts. Please wait a few minutes and try again.',
-  token: 'That confirmation link is no longer valid. Enter your email again to get a new one.',
+  token: 'That link is no longer valid. Enter your email again to get a new one.',
   config: 'Something went wrong on our side. Please try again later.',
   invalid: 'Something went wrong. Please try again.',
   already: 'You are already on the list. Check your inbox for the chapter link.',
   price: 'Pick a fair-price range so I can count you in.',
 };
+
+const SENT_MESSAGE =
+  'If this email is subscribed, I sent a link. Check your inbox — including spam.';
 
 function siteKeyFromEnv(env: Env): string {
   return (env.PUBLIC_TURNSTILE_SITE_KEY || env.TURNSTILE_SITE_KEY || '').trim();
@@ -44,8 +47,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const url = new URL(context.request.url);
   const errorCode = url.searchParams.get('error') || '';
   const errorMessage = ERROR_MESSAGES[errorCode] || '';
+  const sentOk = url.searchParams.get('sent') === '1';
 
-  if (!siteKey && !errorMessage) {
+  if (!siteKey && !errorMessage && !sentOk) {
     return response;
   }
 
@@ -70,6 +74,18 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       element(el) {
         el.setAttribute('role', 'alert');
         el.setAttribute('class', 'form-status is-error');
+        el.removeAttribute('hidden');
+        el.setInnerContent(html, { html: true });
+      },
+    });
+  }
+
+  if (sentOk) {
+    const html = escapeHtml(SENT_MESSAGE);
+    rewriter.on('[data-early-access-sent-slot]', {
+      element(el) {
+        el.setAttribute('role', 'status');
+        el.setAttribute('class', 'form-status is-ok');
         el.removeAttribute('hidden');
         el.setInnerContent(html, { html: true });
       },

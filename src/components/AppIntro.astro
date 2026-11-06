@@ -1,0 +1,30 @@
+---
+import BuildStats from './BuildStats.astro';
+import { appIntro } from '../data/app-intro';
+---
+
+<section class="section app-intro" aria-labelledby="app-intro-heading">
+  <div class="container">
+    <p class="margin-note">Field notes · the product</p>
+    <h2 class="section-title" id="app-intro-heading">{appIntro.title}</h2>
+    <p class="section-lede app-intro-lede">{appIntro.paragraph}</p>
+
+    <BuildStats headingId="playbook-by-the-numbers" />
+
+    <div class="app-intro-columns">
+      <div class="app-intro-col">
+        <p class="margin-note">{appIntro.stack.label}</p>
+        <p>{appIntro.stack.body}</p>
+      </div>
+      <div class="app-intro-col">
+        <p class="margin-note">{appIntro.built.label}</p>
+        <p>{appIntro.built.body}</p>
+      </div>
+    </div>
+
+    <div class="app-intro-lessons">
+      <p class="margin-note">{appIntro.lessons.label}</p>
+      <p>{appIntro.lessons.body}</p>
+    </div>
+  </div>
+</section>

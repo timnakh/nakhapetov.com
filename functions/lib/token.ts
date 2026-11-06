@@ -2,12 +2,12 @@
  * HMAC subscriber token: email + timestamp.
  * Format: base64url(email + '.' + ts) + '.' + hex(hmac-sha256)
  *
- * Confirm links: 48h. Early-access / interest links: 90d (same payload shape).
+ * Confirm links: 48h. Early-access / interest links: 48h (same payload shape).
  * Important: email may contain dots — parse timestamp from the last '.' of the payload.
  */
 
 export const CONFIRM_TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
-export const INTEREST_TOKEN_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+export const INTEREST_TOKEN_TTL_MS = 48 * 60 * 60 * 1000;
 
 function toHex(buf: ArrayBuffer): string {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -86,7 +86,7 @@ export async function verifyConfirmToken(
   }
 }
 
-/** Same HMAC shape as confirm; verified with the longer interest TTL. */
+/** Same HMAC shape as confirm; verified with the interest TTL (48h). */
 export async function verifyInterestToken(
   token: string,
   secret: string,

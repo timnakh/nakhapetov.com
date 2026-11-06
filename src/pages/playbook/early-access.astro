@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { playbook } from '../../data/playbook';
 
-// Static page: `?t=` / `?email=` are read client-side (Astro build has no request searchParams).
+// Static page: `?t=` / `?sent=` are read client-side / middleware (Astro build has no request searchParams).
 const priceOptions = [
   { value: 'under_20', label: 'Under $20' },
   { value: '20_40', label: '$20–40' },
@@ -29,6 +29,7 @@ const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
         The full playbook and the AI Pack are written. I am checking demand before I open sales.
       </p>
       <p class="form-status is-error" role="alert" data-subscribe-error-slot hidden></p>
+      <p class="form-status is-ok" role="status" data-early-access-sent-slot hidden></p>
     </div>
   </section>
 
@@ -104,10 +105,10 @@ const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
 
       <div data-interest-gate>
         <p class="lede" style="font-size: 1.05rem; margin-bottom: 0.75rem;">
-          Already confirmed for the free chapter? Enter the same email — I will open the demand form (no second confirmation).
+          Enter the email you confirmed for the free chapter. If it is subscribed, I will send a link to the demand form — the form only opens from that link.
         </p>
         <p class="hint" style="margin-bottom: 1rem;">
-          New here? You will get one confirm email with the free chapter and an early-access link. This is not a second free-chapter signup.
+          New here? Start with the free chapter on the playbook page first, then come back with the same email.
         </p>
         <form
           id="early-access-gate"
@@ -141,7 +142,7 @@ const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
               />
             </div>
             <button class="btn btn-primary" type="submit" data-subscribe-submit>
-              Continue to demand form
+              Send me a link
             </button>
           </div>
           <div
@@ -167,11 +168,9 @@ const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
   (function () {
     var params = new URLSearchParams(window.location.search);
     var token = (params.get('t') || '').trim();
-    var emailParam = (params.get('email') || '').trim();
     var withToken = document.querySelector('[data-interest-with-token]');
     var gate = document.querySelector('[data-interest-gate]');
     var tokenInput = document.querySelector('[data-interest-token]');
-    var emailInput = document.querySelector('[data-gate-email]');
     var comment = document.getElementById('interest-comment');
     var count = document.querySelector('[data-interest-count]');
 
@@ -179,8 +178,6 @@ const siteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '').trim();
       tokenInput.value = token;
       withToken.hidden = false;
       gate.hidden = true;
-    } else if (emailInput && emailParam) {
-      emailInput.value = emailParam;
     }
 
     if (comment && count) {
