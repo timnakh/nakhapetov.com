@@ -1,0 +1,2 @@
+# Preserve query string (utm_* etc.) by default on Cloudflare Pages
+/newsletter  https://tims-newsletter-209186.beehiiv.com/  302

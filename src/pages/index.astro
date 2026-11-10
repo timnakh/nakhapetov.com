@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import BuildStats from '../components/BuildStats.astro';
-import { projects } from '../data/projects';
+import { personSameAs, projects } from '../data/projects';
 import { site } from '../data/playbook';
 import { milestones } from '../data/log';
 import { figNumbersForPage } from '../data/proof';
@@ -11,6 +11,14 @@ const journal = projects.filter((p) => !p.featuredWorld && p.id !== 'playbook');
 const worlds = projects.filter((p) => p.featuredWorld);
 const playbookProject = projects.find((p) => p.id === 'playbook');
 const figs = figNumbersForPage('playbook');
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Tim Nakhapetov',
+  url: site.url,
+  sameAs: personSameAs,
+};
 ---
 
 <BaseLayout
@@ -18,6 +26,7 @@ const figs = figNumbersForPage('playbook');
   description="Indie developer. Small apps I shipped, and notes on how it was done — including the Indie Launch Playbook."
   canonicalPath="/"
   ogImage="/og-home.png"
+  jsonLd={personJsonLd}
 >
   <section class="page-hero">
     <div class="container hero-split">

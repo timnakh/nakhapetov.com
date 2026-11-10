@@ -278,9 +278,21 @@ p:last-child {
 .site-footer .inner {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-  align-items: center;
+  gap: 1.25rem 2rem;
+  align-items: flex-start;
   justify-content: space-between;
+}
+
+.footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.footer-meta p {
+  margin: 0;
 }
 
 .site-footer a {
@@ -297,6 +309,38 @@ p:last-child {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 1.25rem;
+}
+
+/* Light field-note style: short text list, no icons */
+.footer-find-me {
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.55rem 0 0.55rem 0.85rem;
+  border-left: 3px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+.footer-find-me-label {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.footer-find-me-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  max-width: 100%;
+}
+
+.footer-find-me-list a {
+  display: inline;
+  word-break: break-word;
 }
 
 /* Форма */
