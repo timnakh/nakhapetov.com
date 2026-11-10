@@ -61,5 +61,28 @@ export const projects: Project[] = [
   },
 ];
 
-/** Соцссылки в футере; пустые не показываются */
-export const socialLinks: { label: string; href: string }[] = [];
+/** Соцссылки в футере «Find me». */
+export type SocialLink = {
+  label: string;
+  href: string;
+  /** External profile → target=_blank rel="me noopener". Internal paths stay same-tab. */
+  external?: boolean;
+};
+
+export const newsletterUrl = 'https://tims-newsletter-209186.beehiiv.com/';
+
+export const socialLinks: SocialLink[] = [
+  { label: 'X', href: 'https://x.com/timnakhapet', external: true },
+  { label: 'Threads', href: 'https://www.threads.com/@timnakhapet', external: true },
+  { label: 'Bluesky', href: 'https://bsky.app/profile/timnakhapet.bsky.social', external: true },
+  { label: 'Indie Hackers', href: 'https://www.indiehackers.com/timnakhapet', external: true },
+  { label: 'Medium', href: 'https://tim-nakhapetov.medium.com/', external: true },
+  { label: 'Reddit', href: 'https://www.reddit.com/user/LJ-RPG/', external: true },
+  { label: 'Newsletter', href: '/newsletter' },
+];
+
+/** Person sameAs for home JSON-LD (profiles + Beehiiv; no internal /newsletter path). */
+export const personSameAs: string[] = [
+  ...socialLinks.filter((l) => l.external).map((l) => l.href),
+  newsletterUrl,
+];
